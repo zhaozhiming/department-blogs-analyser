@@ -1,6 +1,6 @@
-apply plugin: 'war'
-apply plugin: 'idea'
-apply plugin: 'jetty'
+apply plugin: "war"
+apply plugin: "idea"
+apply plugin: "jetty"
 
 compileJava {
     sourceCompatibility = 1.6
@@ -13,7 +13,7 @@ jettyRun {
 
 repositories {
     maven { 
-        url 'http://maven.oschina.net/content/groups/public/' 
+        url "http://maven.oschina.net/content/groups/public/" 
     }
 }
 
@@ -27,9 +27,9 @@ sourceSets {
     test.runtimeClasspath += configurations.provided
 }
 
-String springVersion = '4.0.3.RELEASE'
-String hibernateVersion = '4.2.7.Final'
-String slf4jVersion = '1.7.7'
+String springVersion = "4.0.3.RELEASE"
+String hibernateVersion = "4.2.7.Final"
+String slf4jVersion = "1.7.7"
 
 dependencies {
     provided(
@@ -38,41 +38,41 @@ dependencies {
     )
 
     //spring
-    compile ('org.springframework:spring-context:' + springVersion)
-    compile ('org.springframework:spring-aop:' + springVersion)
-    compile ('org.springframework:spring-beans:' + springVersion)
-    compile ('org.springframework:spring-core:' + springVersion)
-    compile ('org.springframework:spring-expression:' + springVersion)
-    compile ('org.springframework:spring-webmvc:' + springVersion)
+    compile ("org.springframework:spring-context:" + springVersion)
+    compile ("org.springframework:spring-aop:" + springVersion)
+    compile ("org.springframework:spring-beans:" + springVersion)
+    compile ("org.springframework:spring-core:" + springVersion)
+    compile ("org.springframework:spring-expression:" + springVersion)
+    compile ("org.springframework:spring-webmvc:" + springVersion)
 
     //aspects
-    compile 'org.aspectj:aspectjrt:1.7.3'
-    compile 'org.aspectj:aspectjweaver:1.7.3'
+    compile "org.aspectj:aspectjrt:1.7.3"
+    compile "org.aspectj:aspectjweaver:1.7.3"
     
     //logging
 
     compile("log4j:log4j:1.2.17")
-    compile("org.slf4j:slf4j-log4j12:1.7.5")
+    compile("org.slf4j:slf4j-log4j12:" + slf4jVersion)
 
     //json
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
-    compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
-    compile 'org.codehaus.jackson:jackson-core-asl:1.9.13'
+    compile "com.fasterxml.jackson.core:jackson-databind:2.2.3"
+    compile "org.codehaus.jackson:jackson-mapper-asl:1.9.13"
+    compile "org.codehaus.jackson:jackson-core-asl:1.9.13"
 
     //db access
-    compile 'org.hibernate:hibernate-validator:4.3.1.Final'
-    compile 'org.springframework:spring-jdbc:' + springVersion
-    compile 'org.springframework:spring-orm:' + springVersion
-    compile 'org.springframework.data:spring-data-jpa:1.4.3.RELEASE'
-    compile 'org.hibernate:hibernate-entitymanager:' + hibernateVersion
-    compile 'org.hibernate:hibernate-core:' + hibernateVersion
-    compile 'org.hibernate:hibernate-ehcache:4.2.7.Final'
-    compile 'mysql:mysql-connector-java:5.1.30'
+    compile "org.hibernate:hibernate-validator:4.3.1.Final"
+    compile "org.springframework:spring-jdbc:" + springVersion
+    compile "org.springframework:spring-orm:" + springVersion
+    compile "org.springframework.data:spring-data-jpa:1.4.3.RELEASE"
+    compile "org.hibernate:hibernate-entitymanager:" + hibernateVersion
+    compile "org.hibernate:hibernate-core:" + hibernateVersion
+    compile "org.hibernate:hibernate-ehcache:4.2.7.Final"
+    compile "mysql:mysql-connector-java:5.1.30"
 
     //other
-    compile 'com.google.guava:guava:16.0'
-    compile 'joda-time:joda-time:2.3'
-    compile 'org.jadira.usertype:usertype.jodatime:2.0.1'
+    compile "com.google.guava:guava:16.0"
+    compile "joda-time:joda-time:2.3"
+    compile "org.jadira.usertype:usertype.jodatime:2.0.1"
 
     //testing
     testCompile "junit:junit:4.11"
