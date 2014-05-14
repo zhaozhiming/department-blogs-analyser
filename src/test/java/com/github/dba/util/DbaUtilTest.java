@@ -40,7 +40,6 @@ public class DbaUtilTest {
 
     @Test
     public void should_return_correct_time_when_given_yesterday() throws Exception {
-
         assertThat(DbaUtil.parseIteyeTime("昨天"),
                 is(new DateTime().minusDays(1).toString(DEFAULT_TIME_FORMAT)));
     }

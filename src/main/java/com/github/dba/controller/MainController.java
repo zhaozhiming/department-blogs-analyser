@@ -27,9 +27,9 @@ public class MainController {
     private static final Log log = LogFactory.getLog(MainController.class);
     private static final String TOP_TEXT = "[置顶]";
 
-    @Value(value = "$urls")
+    @Value("${urls}")
     private String urls;
-    
+
     @RequestMapping(value = "/parse", method = RequestMethod.GET)
     public
     @ResponseBody
@@ -40,7 +40,7 @@ public class MainController {
 
         List<Blog> blogList = Lists.newArrayList();
         for (String url : urlArray) {
-            Document doc = Jsoup.connect(url).get();
+            Document doc = Jsoup.connect(url).userAgent("Mozilla").get();
             if (url.contains("csdn")) {
                 blogList.addAll(fetchCsdnBlog(doc, "article_toplist"));
                 blogList.addAll(fetchCsdnBlog(doc, "article_list"));

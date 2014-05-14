@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class DbaUtil {
     public static final String DEFAULT_TIME_FORMAT = "yyyy-MM-dd HH:mm";
-    public static final String NOW = new DateTime().toString(DEFAULT_TIME_FORMAT);
+    public static final String NOW = DateTime.now().toString(DEFAULT_TIME_FORMAT);
 
     public static String parseIteyeTime(String source) {
         if (source.contains("不到")) {
