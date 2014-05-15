@@ -19,3 +19,8 @@
 1. B/S架构，DB采用MYSQL，编程语言不限。
 2. 避免单点，考虑数据备份。
 3. 运行环境不要求一定在公司内部。
+
+### TODO LIST
+- [ ] add iteye next page function
+- [ ] put blog data to db
+
