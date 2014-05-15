@@ -2,6 +2,7 @@ package com.github.dba.controller;
 
 import com.github.dba.model.Author;
 import com.github.dba.model.Blog;
+import com.github.dba.repo.BlogRepository;
 import com.github.dba.util.DbaUtil;
 import com.google.common.collect.Lists;
 import org.apache.commons.logging.Log;
@@ -10,6 +11,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +28,9 @@ import static java.lang.Integer.valueOf;
 public class MainController {
     private static final Log log = LogFactory.getLog(MainController.class);
     private static final String TOP_TEXT = "[置顶]";
+
+    @Autowired
+    private BlogRepository blogRepository;
 
     @Value("${urls}")
     private String urls;
@@ -75,6 +80,8 @@ public class MainController {
                     blog.select("div.blog_bottom li").get(1).text());
             int comment = fetchNumber(
                     blog.select("div.blog_bottom li").get(2).text());
+
+            blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, "iteye"));
             blogList.add(new Blog(title, link, view, comment, time, author, blogId, "iteye"));
         }
         return blogList;
@@ -105,6 +112,7 @@ public class MainController {
             Document detailDoc = Jsoup.connect(link).userAgent("Mozilla").get();
             Elements tags = detailDoc.select("#article_details div.tag2box a");
             Author author = getAuthor(tags);
+            blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, "iteye"));
             blogList.add(new Blog(title, link, view, comment, time, author, blogId, "csdn"));
         }
         return blogList;
