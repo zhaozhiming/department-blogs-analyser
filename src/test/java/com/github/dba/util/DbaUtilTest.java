@@ -45,6 +45,12 @@ public class DbaUtilTest {
     }
 
     @Test
+    public void should_return_correct_time_when_given_the_day_before_yesterday() throws Exception {
+        assertThat(DbaUtil.parseIteyeTime("前天"),
+                is(new DateTime().minusDays(2).toString(DEFAULT_TIME_FORMAT)));
+    }
+
+    @Test
     public void should_return_correct_time_when_given_exact_time() throws Exception {
         assertThat(DbaUtil.parseIteyeTime("2014-04-24 09:58"), is("2014-04-24 09:58"));
     }

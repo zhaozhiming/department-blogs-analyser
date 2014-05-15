@@ -26,6 +26,10 @@ public class DbaUtil {
             return new DateTime().minusDays(1).toString(DEFAULT_TIME_FORMAT);
         }
 
+        if ("前天".equals(source)) {
+            return new DateTime().minusDays(2).toString(DEFAULT_TIME_FORMAT);
+        }
+
         return source;
     }
 

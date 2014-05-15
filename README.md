@@ -23,4 +23,5 @@
 ### TODO LIST
 - [ ] add iteye next page function
 - [ ] put blog data to db
+- [ ] add ci
 
