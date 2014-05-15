@@ -58,6 +58,8 @@ public class MainController {
     private List<Blog> fetchIteyeBlog(Document doc, String url) throws Exception {
         List<Blog> blogList = Lists.newArrayList();
         Elements blogs = doc.select("#main div.blog_main");
+        log.debug("blog size:" + blogs.size());
+
         for (Element blog : blogs) {
             Element titleElement = blog.select("div.blog_title h3 a").get(0);
             String title = fetchTitle(titleElement);
