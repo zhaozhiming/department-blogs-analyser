@@ -13,7 +13,7 @@
 
 .gradle
 build
-out
+src/main/resources/META-INF/persistence.xml
 
 # special file
 **/persistence.xml

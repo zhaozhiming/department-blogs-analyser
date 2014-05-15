@@ -40,11 +40,12 @@ public class MainController {
 
         List<Blog> blogList = Lists.newArrayList();
         for (String url : urlArray) {
-            Document doc = Jsoup.connect(url).userAgent("Mozilla").get();
             if (url.contains("csdn")) {
-                blogList.addAll(fetchCsdnBlog(doc, "article_toplist"));
-                blogList.addAll(fetchCsdnBlog(doc, "article_list"));
+                Document doc = Jsoup.connect(url + "?viewmode=contents").userAgent("Mozilla").get();
+                blogList.addAll(fetchCsdnBlog(doc, "article_toplist", url));
+                blogList.addAll(fetchCsdnBlog(doc, "article_list", url));
             } else {
+                Document doc = Jsoup.connect(url).userAgent("Mozilla").get();
                 blogList.addAll(fetchIteyeBlog(doc, url));
             }
         }
@@ -78,13 +79,17 @@ public class MainController {
     }
 
 
-    private List<Blog> fetchCsdnBlog(Document doc, String elementId) throws Exception {
+    private List<Blog> fetchCsdnBlog(Document doc, String elementId, String url) throws Exception {
         List<Blog> blogList = Lists.newArrayList();
         Elements blogs = doc.select(String.format("#%s div.list_item.list_view", elementId));
+        log.debug("blog size:" + blogs.size());
 
         for (Element blog : blogs) {
             Element titleLink = blog.select("div.article_title span.link_title a").get(0);
             String link = titleLink.attr("href");
+            link = url.substring(0, url.lastIndexOf("/") + 1) + link;
+            log.debug(String.format("blog detail link:%s", link));
+
             String title = fetchTitle(titleLink);
             String blogId = fetchBlogId(link);
             String time = blog.select("div.article_manage span.link_postdate").get(0).text();
@@ -95,7 +100,7 @@ public class MainController {
             int comment = fetchNumber(blog.select(
                     "div.article_manage span.link_comments").get(0).text());
 
-            Document detailDoc = Jsoup.connect(link).get();
+            Document detailDoc = Jsoup.connect(link).userAgent("Mozilla").get();
             Elements tags = detailDoc.select("#article_details div.tag2box a");
             Author author = getAuthor(tags);
             blogList.add(new Blog(title, link, view, comment, time, author, blogId, "csdn"));

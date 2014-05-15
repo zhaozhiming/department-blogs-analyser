@@ -1,6 +1,10 @@
 package com.github.dba.model;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class Author {
+    private static final Log log = LogFactory.getLog(Author.class);
     private final String group;
     private final String name;
 
@@ -21,7 +25,12 @@ public class Author {
 
 
     private String fetchGroupName(String groupShort) {
-        return Group.valueOf(groupShort).group();
+        try {
+            return Group.valueOf(groupShort).group();
+        }catch (Exception e) {
+            log.debug("not group match the name");
+            return Group.W.group();
+        }
     }
 
     @Override
