@@ -28,6 +28,8 @@ import static java.lang.Integer.valueOf;
 public class MainController {
     private static final Log log = LogFactory.getLog(MainController.class);
     private static final String TOP_TEXT = "[置顶]";
+    private static final String ITEYE_KEY_WORD = "iteye";
+    private static final String CSDN_KEY_WORD = "csdn";
 
     @Autowired
     private BlogRepository blogRepository;
@@ -81,8 +83,10 @@ public class MainController {
             int comment = fetchNumber(
                     blog.select("div.blog_bottom li").get(2).text());
 
-            blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, "iteye"));
-            blogList.add(new Blog(title, link, view, comment, time, author, blogId, "iteye"));
+            if(blogRepository.isBlogExist(ITEYE_KEY_WORD, blogId)) break;
+
+            blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD));
+            blogList.add(new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD));
         }
         return blogList;
     }
@@ -112,8 +116,11 @@ public class MainController {
             Document detailDoc = Jsoup.connect(link).userAgent("Mozilla").get();
             Elements tags = detailDoc.select("#article_details div.tag2box a");
             Author author = getAuthor(tags);
-            blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, "iteye"));
-            blogList.add(new Blog(title, link, view, comment, time, author, blogId, "csdn"));
+
+            if(blogRepository.isBlogExist(CSDN_KEY_WORD, blogId)) break;
+
+            blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
+            blogList.add(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
         }
         return blogList;
     }

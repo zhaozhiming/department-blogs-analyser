@@ -4,8 +4,9 @@
 
 ### TODO LIST
 - [ ] add iteye next page function
+- [ ] add csdn next page function
 - [x] set unique key with blog id and website
-- [ ] check blog id and website exist before when insert blog
+- [x] check blog id and website exist before when insert blog, if exist then break
 - [x] put blog data to db
 - [x] add ci
 - [x] add a require md, move require from readme
