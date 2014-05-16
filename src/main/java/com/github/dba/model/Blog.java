@@ -2,7 +2,8 @@ package com.github.dba.model;
 
 import javax.persistence.*;
 
-@Entity(name = "blogs")
+@Entity
+@Table(name="blogs", uniqueConstraints=@UniqueConstraint(columnNames={"blogId", "website"}))
 public class Blog {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
