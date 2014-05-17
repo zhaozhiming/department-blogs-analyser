@@ -2,6 +2,7 @@ package com.github.dba.service;
 
 import com.github.dba.model.Author;
 import com.github.dba.repo.DepGroupRepository;
+import com.github.dba.repo.DepMemberRepository;
 import com.google.common.base.Strings;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,9 @@ public class AuthorService {
     @Autowired
     private DepGroupRepository depGroupRepository;
 
+    @Autowired
+    private DepMemberRepository depMemberRepository;
+
     public Author fetchAuthor(Elements tags) {
         if (tags.size() == 0) return Author.defaultAuthor();
 
@@ -23,6 +27,8 @@ public class AuthorService {
         if (texts.length != 2) return Author.defaultAuthor();
 
         String groupName = depGroupRepository.findGroupFullNameByShort(texts[0]);
-        return new Author(groupName, texts[1]);
+        String memberName = depMemberRepository.findMemberFullNameByShort(texts[1]);
+
+        return new Author(groupName, memberName);
     }
 }

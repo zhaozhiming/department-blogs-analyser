@@ -38,10 +38,10 @@ public class MainController {
     @Value("${groups}")
     private String groups;
 
-    @RequestMapping(value = "/fetch", method = RequestMethod.GET)
+    @RequestMapping(value = "/blog/fetch", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    public void fetch() throws Exception {
-        log.debug("fetch url start");
+    public void blogFetch() throws Exception {
+        log.debug("blog fetch start");
         String[] urlArray = urls.split(",");
         log.debug("urls:" + Arrays.toString(urlArray));
 
@@ -52,7 +52,7 @@ public class MainController {
             }
             iteyeFetcher.fetch(url);
         }
-        log.debug("fetch url finish");
+        log.debug("blog fetch finish");
     }
 
     @RequestMapping(value = "/group/create", method = RequestMethod.GET)

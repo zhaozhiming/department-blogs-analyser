@@ -3,10 +3,10 @@
 ### [Requires][url1]
 
 ### TODO LIST
-- [ ] add member table and insert record
 - [ ] add mail statistics info
 - [ ] add send mail function with sae
-- [ ] make fetch url to blog/fetch
+- [x] make fetch url to blog/fetch
+- [x] add member table and insert record
 - [x] record unknown author when have not author tag
 - [x] add group table and insert record
 - [x] when blog exist, stop fetch blog
