@@ -16,7 +16,6 @@ import java.util.Arrays;
 @Controller
 public class MainController {
     private static final Log log = LogFactory.getLog(MainController.class);
-    private static final String CSDN_KEY_WORD = "csdn";
 
     @Autowired
     private CsdnFetcher csdnFetcher;
@@ -27,23 +26,23 @@ public class MainController {
     @Value("${urls}")
     private String urls;
 
-    @RequestMapping(value = "/parse", method = RequestMethod.GET)
+    @RequestMapping(value = "/fetch", method = RequestMethod.GET)
     public
     @ResponseBody
-    String parse() throws Exception {
-        log.debug("parse url start");
+    String fetch() throws Exception {
+        log.debug("fetch url start");
         String[] urlArray = urls.split(",");
         log.debug("urls:" + Arrays.toString(urlArray));
 
         for (String url : urlArray) {
-            if (url.contains(CSDN_KEY_WORD)) {
+            if (url.contains(CsdnFetcher.CSDN_KEY_WORD)) {
                 csdnFetcher.fetch(url);
                 continue;
             }
             iteyeFetcher.fetch(url);
         }
 
-        log.debug("parse url finish");
+        log.debug("fetch url finish");
         return "hehe";
     }
 }

@@ -18,7 +18,7 @@ import static java.lang.String.format;
 public class CsdnFetcher {
     private static final Log log = LogFactory.getLog(CsdnFetcher.class);
     private static final double CSDN_PAGE_COUNT = 50d;
-    private static final String CSDN_KEY_WORD = "csdn";
+    public static final String CSDN_KEY_WORD = "csdn";
 
     @Autowired
     private BlogRepository blogRepository;
