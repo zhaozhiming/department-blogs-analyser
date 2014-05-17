@@ -6,6 +6,7 @@
 - [ ] when blog exist, stop fetch blog
 - [ ] add group table and insert record
 - [ ] add colleague table and insert record
+- [ ] exact fetch from controller to service
 - [x] add iteye next page function
 - [x] add csdn next page function
 - [x] set unique key with blog id and website

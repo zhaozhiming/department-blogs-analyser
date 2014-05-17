@@ -24,14 +24,14 @@ public class CsdnFetcher {
     private BlogRepository blogRepository;
 
     public void fetch(String url) throws Exception {
-        Document doc = fetchCsdn(format("%s?viewmode=contents", url));
-        double totalPage = getCsdnTotalPage(doc);
+        Document doc = fetchPage(format("%s?viewmode=contents", url));
+        double totalPage = getTotalPage(doc);
         for (int i = 2; i <= totalPage; i++) {
-            fetchCsdn(format("%s/article/list/%d?viewmode=contents", url, i));
+            fetchPage(format("%s/article/list/%d?viewmode=contents", url, i));
         }
     }
 
-    private double getCsdnTotalPage(Document doc) {
+    private double getTotalPage(Document doc) {
         Elements statistics = doc.select("#blog_statistics li");
         int total = 0;
         for (int i = 0; i <= 2; i++) {
@@ -40,14 +40,14 @@ public class CsdnFetcher {
         return Math.ceil(total / CSDN_PAGE_COUNT);
     }
 
-    private Document fetchCsdn(String url) throws Exception {
+    private Document fetchPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
-        fetchCsdnBlog(doc, "article_toplist", url);
-        fetchCsdnBlog(doc, "article_list", url);
+        fetchBlog(doc, "article_toplist", url);
+        fetchBlog(doc, "article_list", url);
         return doc;
     }
 
-    private void fetchCsdnBlog(Document doc, String elementId, String url) throws Exception {
+    private void fetchBlog(Document doc, String elementId, String url) throws Exception {
         Elements blogs = doc.select(format("#%s div.list_item.list_view", elementId));
         log.debug("blog size:" + blogs.size());
 

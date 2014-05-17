@@ -28,13 +28,13 @@ public class Author {
         }
     }
 
-    public static Author defaultAuthor() {
-        return new Author("W-赵芝明");
-    }
-
     public static Author getAuthorBy(Elements tags) {
         if (tags.size() == 0) return Author.defaultAuthor();
         return new Author(tags.get(tags.size() - 1).text());
+    }
+
+    private static Author defaultAuthor() {
+        return new Author("W-赵芝明");
     }
 
     private String fetchGroupName(String groupShort) {
