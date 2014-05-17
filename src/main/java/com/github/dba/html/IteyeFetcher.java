@@ -21,7 +21,6 @@ public class IteyeFetcher {
     private static final Log log = LogFactory.getLog(IteyeFetcher.class);
     private static final double ITEYE_PAGE_COUNT = 15d;
     private static final String ITEYE_KEY_WORD = "iteye";
-    private boolean giveUp = false;
 
     @Autowired
     private BlogRepository blogRepository;
@@ -30,25 +29,26 @@ public class IteyeFetcher {
     private AuthorService authorService;
 
     public void fetch(String url) throws Exception {
-        fetchBlogs(url);
-        if (giveUp) return;
+        Document doc = fetchPage(url);
 
-        double totalPage = getTotalPage(url);
+        double totalPage = getTotalPage(doc);
         for (int i = 2; i <= totalPage; i++) {
-            if (giveUp) return;
-
-            fetchBlogs(format("%s/?page=%d", url, i));
+            fetchPage(format("%s/?page=%d", url, i));
         }
     }
 
-    private double getTotalPage(String url) throws Exception {
+    private Document fetchPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
+        fetchBlogs(doc, url);
+        return doc;
+    }
+
+    private double getTotalPage(Document doc) throws Exception {
         int total = fetchNumber(doc.select("#blog_menu a").get(0).text());
         return Math.ceil(total / ITEYE_PAGE_COUNT);
     }
 
-    private void fetchBlogs(String url) throws Exception {
-        Document doc = fetchUrlDoc(url);
+    private void fetchBlogs(Document doc, String url) throws Exception {
         Elements blogs = doc.select("#main div.blog_main");
         log.debug("blog size:" + blogs.size());
 
@@ -69,9 +69,10 @@ public class IteyeFetcher {
             int comment = fetchNumber(
                     blog.select("div.blog_bottom li").get(2).text());
 
-            if (blogRepository.isBlogExist(ITEYE_KEY_WORD, blogId)) {
-                giveUp = true;
-                return;
+            Blog result = blogRepository.queryBlogBy(ITEYE_KEY_WORD, blogId);
+            if (result != null) {
+                blogRepository.updateBlog(result.getId(), title, view, comment, author);
+                continue;
             }
 
             blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD));

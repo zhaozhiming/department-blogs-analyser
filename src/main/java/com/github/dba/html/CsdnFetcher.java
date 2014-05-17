@@ -20,7 +20,6 @@ public class CsdnFetcher {
     private static final Log log = LogFactory.getLog(CsdnFetcher.class);
     private static final double CSDN_PAGE_COUNT = 50d;
     public static final String CSDN_KEY_WORD = "csdn";
-    private boolean giveUp = false;
 
     @Autowired
     private BlogRepository blogRepository;
@@ -29,31 +28,28 @@ public class CsdnFetcher {
     private AuthorService authorService;
 
     public void fetch(String url) throws Exception {
-        fetchPage(format("%s?viewmode=contents", url));
-        if (giveUp) return;
+        Document doc = fetchPage(format("%s?viewmode=contents", url));
 
-        double totalPage = getTotalPage(url);
+        double totalPage = getTotalPage(doc);
         for (int i = 2; i <= totalPage; i++) {
-            if (giveUp) return;
-
             fetchPage(format("%s/article/list/%d?viewmode=contents", url, i));
         }
     }
 
-    private double getTotalPage(String url) throws Exception {
+    private Document fetchPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
+        fetchBlogs(doc, "article_toplist", url);
+        fetchBlogs(doc, "article_list", url);
+        return doc;
+    }
+
+    private double getTotalPage(Document doc) throws Exception {
         Elements statistics = doc.select("#blog_statistics li");
         int total = 0;
         for (int i = 0; i <= 2; i++) {
             total += fetchNumber(statistics.get(i).text());
         }
         return Math.ceil(total / CSDN_PAGE_COUNT);
-    }
-
-    private void fetchPage(String url) throws Exception {
-        Document doc = fetchUrlDoc(url);
-        fetchBlogs(doc, "article_toplist", url);
-        fetchBlogs(doc, "article_list", url);
     }
 
     private void fetchBlogs(Document doc, String elementId, String url) throws Exception {
@@ -81,9 +77,10 @@ public class CsdnFetcher {
             Elements tags = detailDoc.select("#article_details div.tag2box a");
             Author author = authorService.fetchAuthor(tags);
 
-            if (blogRepository.isBlogExist(CSDN_KEY_WORD, blogId)) {
-                giveUp = true;
-                return;
+            Blog result = blogRepository.queryBlogBy(CSDN_KEY_WORD, blogId);
+            if (result != null) {
+                blogRepository.updateBlog(result.getId(), title, view, comment, author);
+                continue;
             }
 
             blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
