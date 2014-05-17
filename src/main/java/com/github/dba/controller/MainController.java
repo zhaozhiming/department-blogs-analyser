@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -30,6 +31,7 @@ public class MainController {
     private static final String TOP_TEXT = "[置顶]";
     private static final String ITEYE_KEY_WORD = "iteye";
     private static final String CSDN_KEY_WORD = "csdn";
+    private static final double ITEYE_PAGE_COUNT = 15d;
 
     @Autowired
     private BlogRepository blogRepository;
@@ -47,13 +49,20 @@ public class MainController {
 
         List<Blog> blogList = Lists.newArrayList();
         for (String url : urlArray) {
-            if (url.contains("csdn")) {
-                Document doc = Jsoup.connect(url + "?viewmode=contents").userAgent("Mozilla").get();
+            if (url.contains(CSDN_KEY_WORD)) {
+                Document doc = fetchUrlDoc(url + "?viewmode=contents");
                 blogList.addAll(fetchCsdnBlog(doc, "article_toplist", url));
                 blogList.addAll(fetchCsdnBlog(doc, "article_list", url));
             } else {
-                Document doc = Jsoup.connect(url).userAgent("Mozilla").get();
+                Document doc = fetchUrlDoc(url);
                 blogList.addAll(fetchIteyeBlog(doc, url));
+
+                int total = fetchNumber(doc.select("#blog_menu a").get(0).text());
+                double totalPage = Math.ceil(total / ITEYE_PAGE_COUNT);
+                for (int i = 2; i <= totalPage; i++) {
+                    Document pageDoc = fetchUrlDoc(url + "/?page=" + i);
+                    blogList.addAll(fetchIteyeBlog(pageDoc, url));
+                }
             }
         }
 
@@ -91,7 +100,6 @@ public class MainController {
         return blogList;
     }
 
-
     private List<Blog> fetchCsdnBlog(Document doc, String elementId, String url) throws Exception {
         List<Blog> blogList = Lists.newArrayList();
         Elements blogs = doc.select(String.format("#%s div.list_item.list_view", elementId));
@@ -113,7 +121,8 @@ public class MainController {
             int comment = fetchNumber(blog.select(
                     "div.article_manage span.link_comments").get(0).text());
 
-            Document detailDoc = Jsoup.connect(link).userAgent("Mozilla").get();
+            Document detailDoc = fetchUrlDoc(link);
+
             Elements tags = detailDoc.select("#article_details div.tag2box a");
             Author author = getAuthor(tags);
 
@@ -123,6 +132,10 @@ public class MainController {
             blogList.add(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
         }
         return blogList;
+    }
+
+    private Document fetchUrlDoc(String url) throws IOException {
+        return Jsoup.connect(url).userAgent("Mozilla").get();
     }
 
     private String fetchBlogId(String link) {
@@ -148,7 +161,7 @@ public class MainController {
     }
 
     private String regex(String source, Pattern compile) {
-        return DbaUtil.fetchNumber(source, compile, "can't find with regex");
+        return DbaUtil.fetchNumber(source, compile, "can't find number with regex");
     }
 
 }
