@@ -1,6 +1,6 @@
 package com.github.dba.repo;
 
-import com.github.dba.model.DepGroup;
+import com.github.dba.model.DepMember;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
@@ -14,31 +14,34 @@ import static com.github.dba.repo.BlogRepository.MAIN_PERSISTENCE_UNIT;
 import static com.github.dba.repo.BlogRepository.QUERY_PERSISTENCE_UNIT;
 
 @Repository
-public class DepGroupRepository {
-    private static final Log log = LogFactory.getLog(DepGroupRepository.class);
+public class DepMemberRepository {
+    private static final Log log = LogFactory.getLog(DepMemberRepository.class);
 
-    public void createDepGroups(String groups) {
+    public void createDepMembers() {
         EntityManager entityManager = getEntityManager(MAIN_PERSISTENCE_UNIT);
-        entityManager.createNativeQuery("DELETE FROM dep_groups").executeUpdate();
+        entityManager.createNativeQuery("DELETE FROM dep_members").executeUpdate();
 
-        String[] groupNames = groups.split(",");
-        for (String groupName : groupNames) {
-            String[] texts = groupName.split("-");
-            entityManager.persist(new DepGroup(texts[0], texts[1]));
-        }
+        entityManager.persist(new DepMember("ZZM", "赵芝明"));
+        entityManager.persist(new DepMember("WSL", "王苏龙"));
+        entityManager.persist(new DepMember("FCH", "傅采慧"));
+        entityManager.persist(new DepMember("SY", "宋裕"));
+        entityManager.persist(new DepMember("GYY", "郭杨勇"));
+        entityManager.persist(new DepMember("WZJ", "魏中佳"));
+        entityManager.persist(new DepMember("LDP", "兰东平"));
+
         entityManagerClose(entityManager);
     }
 
-    public String findGroupFullNameByShort(String groupShort) {
+    public String findMemberFullNameByShort(String memberShort) {
         EntityManager entityManager = getEntityManager(QUERY_PERSISTENCE_UNIT);
         Query query = entityManager.createQuery(
-                "select d from " + DepGroup.class.getName() + " d where d.groupShort = ?")
-                .setParameter(1, groupShort.toUpperCase());
+                "select d from " + DepMember.class.getName() + " d where d.memberShort = ?")
+                .setParameter(1, memberShort.toUpperCase());
         try {
-            DepGroup group = (DepGroup) query.getSingleResult();
-            return group.getName();
+            DepMember member = (DepMember) query.getSingleResult();
+            return member.getName();
         } catch (Exception e) {
-            log.debug(String.format("can't find group by short: %s", groupShort));
+            log.debug(String.format("can't find member by short: %s", memberShort));
             return "unknown";
         } finally {
             entityManagerClose(entityManager);

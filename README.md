@@ -3,7 +3,7 @@
 ### [Requires][url1]
 
 ### TODO LIST
-- [ ] add colleague table and insert record
+- [ ] add member table and insert record
 - [ ] add mail statistics info
 - [ ] add send mail function with sae
 - [ ] make fetch url to blog/fetch

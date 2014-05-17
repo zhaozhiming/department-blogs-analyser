@@ -3,6 +3,7 @@ package com.github.dba.controller;
 import com.github.dba.html.CsdnFetcher;
 import com.github.dba.html.IteyeFetcher;
 import com.github.dba.repo.DepGroupRepository;
+import com.github.dba.repo.DepMemberRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class MainController {
 
     @Autowired
     private DepGroupRepository depGroupRepository;
+
+    @Autowired
+    private DepMemberRepository depMemberRepository;
 
     @Value("${urls}")
     private String urls;
@@ -53,10 +57,18 @@ public class MainController {
 
     @RequestMapping(value = "/group/create", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    public void createGroup() {
-        log.debug("create group start");
+    public void createGroups() {
+        log.debug("create groups start");
         log.debug("group names:" + groups);
         depGroupRepository.createDepGroups(groups);
-        log.debug("create group end");
+        log.debug("create groups end");
+    }
+
+    @RequestMapping(value = "/member/create", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void createMembers() {
+            log.debug("create members start");
+        depMemberRepository.createDepMembers();
+        log.debug("create members end");
     }
 }

@@ -10,8 +10,8 @@ import javax.persistence.Query;
 
 @Repository
 public class BlogRepository {
-    private static final String MAIN_PERSISTENCE_UNIT = "mainPersistenceUnit";
-    private static final String QUERY_PERSISTENCE_UNIT = "queryPersistenceUnit";
+    public static final String MAIN_PERSISTENCE_UNIT = "mainPersistenceUnit";
+    public static final String QUERY_PERSISTENCE_UNIT = "queryPersistenceUnit";
 
     public void createBlog(Blog blog) {
         EntityManager entityManager = getEntityManager(MAIN_PERSISTENCE_UNIT);
