@@ -20,30 +20,31 @@ public class IteyeFetcher {
     private static final Log log = LogFactory.getLog(IteyeFetcher.class);
     private static final double ITEYE_PAGE_COUNT = 15d;
     private static final String ITEYE_KEY_WORD = "iteye";
+    private boolean giveUp = false;
 
     @Autowired
     private BlogRepository blogRepository;
 
     public void fetch(String url) throws Exception {
-        Document doc = fetchPage(url);
-        double totalPage = getTotalPage(doc);
+        fetchBlogs(url);
+        if (giveUp) return;
+
+        double totalPage = getTotalPage(url);
         for (int i = 2; i <= totalPage; i++) {
-            fetchPage(format("%s/?page=%d", url, i));
+            if (giveUp) return;
+
+            fetchBlogs(format("%s/?page=%d", url, i));
         }
     }
 
-    private Document fetchPage(String url) throws Exception {
+    private double getTotalPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
-        fetchBlog(doc, url);
-        return doc;
-    }
-
-    private double getTotalPage(Document doc) {
         int total = fetchNumber(doc.select("#blog_menu a").get(0).text());
         return Math.ceil(total / ITEYE_PAGE_COUNT);
     }
 
-    private void fetchBlog(Document doc, String url) throws Exception {
+    private void fetchBlogs(String url) throws Exception {
+        Document doc = fetchUrlDoc(url);
         Elements blogs = doc.select("#main div.blog_main");
         log.debug("blog size:" + blogs.size());
 
@@ -64,7 +65,10 @@ public class IteyeFetcher {
             int comment = fetchNumber(
                     blog.select("div.blog_bottom li").get(2).text());
 
-            if (blogRepository.isBlogExist(ITEYE_KEY_WORD, blogId)) break;
+            if (blogRepository.isBlogExist(ITEYE_KEY_WORD, blogId)) {
+                giveUp = true;
+                return;
+            }
 
             blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD));
         }
