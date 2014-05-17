@@ -1,13 +1,20 @@
 package com.github.dba.util;
 
 import org.joda.time.DateTime;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.lang.Integer.valueOf;
 
 public class DbaUtil {
     public static final String DEFAULT_TIME_FORMAT = "yyyy-MM-dd HH:mm";
     public static final String NOW = DateTime.now().toString(DEFAULT_TIME_FORMAT);
+    private static final String TOP_TEXT = "[置顶]";
 
     public static String parseIteyeTime(String source) {
         if (source.contains("不到")) {
@@ -38,6 +45,31 @@ public class DbaUtil {
         if (matcher.find()) return matcher.group(0);
 
         throw new RuntimeException(error);
+    }
+
+    public static String fetchBlogId(String link) {
+        String[] parts = link.split("/");
+        return parts[parts.length - 1];
+    }
+
+    public static String fetchTitle(Element titleLink) {
+        String title = titleLink.text();
+        if (title.contains(TOP_TEXT)) {
+            return title.replace(TOP_TEXT, "").trim();
+        }
+        return title;
+    }
+
+    public static Document fetchUrlDoc(String url) throws IOException {
+        return Jsoup.connect(url).userAgent("Mozilla").get();
+    }
+
+    public static int fetchNumber(String source) {
+        return valueOf(regex(source, Pattern.compile("\\d+")));
+    }
+
+    private static String regex(String source, Pattern compile) {
+        return DbaUtil.fetchNumber(source, compile, "can't find number with regex");
     }
 
     enum Time {

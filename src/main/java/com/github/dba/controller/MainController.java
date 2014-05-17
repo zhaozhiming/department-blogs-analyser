@@ -1,5 +1,6 @@
 package com.github.dba.controller;
 
+import com.github.dba.html.CsdnFetcher;
 import com.github.dba.model.Author;
 import com.github.dba.model.Blog;
 import com.github.dba.repo.BlogRepository;
@@ -36,6 +37,9 @@ public class MainController {
     @Autowired
     private BlogRepository blogRepository;
 
+    @Autowired
+    private CsdnFetcher csdnFetcher;
+
     @Value("${urls}")
     private String urls;
 
@@ -49,7 +53,7 @@ public class MainController {
 
         for (String url : urlArray) {
             if (url.contains(CSDN_KEY_WORD)) {
-                csdn(url);
+                csdnFetcher.fetch(url);
                 continue;
             }
             iteye(url);
@@ -67,14 +71,6 @@ public class MainController {
         }
     }
 
-    private void csdn(String url) throws Exception {
-        Document doc = fetchCsdn(format("%s?viewmode=contents", url));
-        double totalPage = getCsdnTotalPage(doc);
-        for (int i = 2; i <= totalPage; i++) {
-            fetchCsdn(format("%s/article/list/%d?viewmode=contents", url, i));
-        }
-    }
-
     private Document fetchIteye(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
         fetchIteyeBlog(doc, url);
@@ -86,22 +82,6 @@ public class MainController {
         return Math.ceil(total / ITEYE_PAGE_COUNT);
     }
 
-    private double getCsdnTotalPage(Document doc) {
-        Elements statistics = doc.select("#blog_statistics li");
-        int total = 0;
-        for (int i = 0; i <= 2; i++) {
-            total += fetchNumber(statistics.get(i).text());
-        }
-        return Math.ceil(total / CSDN_PAGE_COUNT);
-    }
-
-    private Document fetchCsdn(String url) throws Exception {
-        Document doc = fetchUrlDoc(url);
-        fetchCsdnBlog(doc, "article_toplist", url);
-        fetchCsdnBlog(doc, "article_list", url);
-        return doc;
-    }
-
     private void fetchIteyeBlog(Document doc, String url) throws Exception {
         Elements blogs = doc.select("#main div.blog_main");
         log.debug("blog size:" + blogs.size());
@@ -110,6 +90,7 @@ public class MainController {
             Element titleElement = blog.select("div.blog_title h3 a").get(0);
             String title = fetchTitle(titleElement);
             String link = url + titleElement.attr("href");
+            log.debug(format("blog detail link:%s", link));
             String blogId = fetchBlogId(link);
             Elements tags = blog.select("div.blog_title div.news_tag a");
             Author author = getAuthor(tags);
@@ -125,37 +106,6 @@ public class MainController {
             if (blogRepository.isBlogExist(ITEYE_KEY_WORD, blogId)) break;
 
             blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD));
-        }
-    }
-
-    private void fetchCsdnBlog(Document doc, String elementId, String url) throws Exception {
-        Elements blogs = doc.select(format("#%s div.list_item.list_view", elementId));
-        log.debug("blog size:" + blogs.size());
-
-        for (Element blog : blogs) {
-            Element titleLink = blog.select("div.article_title span.link_title a").get(0);
-            String link = titleLink.attr("href");
-            link = url.substring(0, url.lastIndexOf("/") + 1) + link;
-            log.debug(format("blog detail link:%s", link));
-
-            String title = fetchTitle(titleLink);
-            String blogId = fetchBlogId(link);
-            String time = blog.select("div.article_manage span.link_postdate").get(0).text();
-
-            int view = fetchNumber(blog.select(
-                    "div.article_manage span.link_view").get(0).text());
-
-            int comment = fetchNumber(blog.select(
-                    "div.article_manage span.link_comments").get(0).text());
-
-            Document detailDoc = fetchUrlDoc(link);
-
-            Elements tags = detailDoc.select("#article_details div.tag2box a");
-            Author author = getAuthor(tags);
-
-            if (blogRepository.isBlogExist(CSDN_KEY_WORD, blogId)) break;
-
-            blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
         }
     }
 

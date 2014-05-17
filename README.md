@@ -3,8 +3,9 @@
 ### [Requires][url1]
 
 ### TODO LIST
-- [ ] fix too many connect bug
 - [ ] when blog exist, stop fetch blog
+- [ ] add group table and insert record
+- [ ] add colleague table and insert record
 - [x] add iteye next page function
 - [x] add csdn next page function
 - [x] set unique key with blog id and website
