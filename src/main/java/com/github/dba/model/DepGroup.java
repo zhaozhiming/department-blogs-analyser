@@ -2,12 +2,14 @@ package com.github.dba.model;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name="dep_groups", uniqueConstraints=@UniqueConstraint(columnNames={"name"}))
+@Entity(name = "dep_groups")
 public class DepGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Basic
+    private String groupShort;
 
     @Basic
     private String name;
@@ -15,8 +17,17 @@ public class DepGroup {
     public DepGroup() {
     }
 
-    public DepGroup(String name) {
+    public DepGroup(String groupShort, String name) {
+        this.groupShort = groupShort;
         this.name = name;
+    }
+
+    public String getGroupShort() {
+        return groupShort;
+    }
+
+    public void setGroupShort(String groupShort) {
+        this.groupShort = groupShort;
     }
 
     public Long getId() {

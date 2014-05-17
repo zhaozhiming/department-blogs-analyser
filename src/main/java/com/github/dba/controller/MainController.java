@@ -31,6 +31,9 @@ public class MainController {
     @Value("${urls}")
     private String urls;
 
+    @Value("${groups}")
+    private String groups;
+
     @RequestMapping(value = "/fetch", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public void fetch() throws Exception {
@@ -52,7 +55,8 @@ public class MainController {
     @ResponseStatus(value = HttpStatus.OK)
     public void createGroup() {
         log.debug("create group start");
-        depGroupRepository.createDepGroups();
+        log.debug("group names:" + groups);
+        depGroupRepository.createDepGroups(groups);
         log.debug("create group end");
     }
 }

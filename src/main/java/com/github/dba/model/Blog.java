@@ -3,7 +3,7 @@ package com.github.dba.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="blogs", uniqueConstraints=@UniqueConstraint(columnNames={"blogId", "website"}))
+@Table(name = "blogs", uniqueConstraints = @UniqueConstraint(columnNames = {"blogId", "website"}))
 public class Blog {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,7 +25,8 @@ public class Blog {
     @Basic
     private String website;
 
-    public Blog() {}
+    public Blog() {
+    }
 
     public Blog(String title, String link, int view,
                 int comment, String time, Author author, String blogId, String website) {

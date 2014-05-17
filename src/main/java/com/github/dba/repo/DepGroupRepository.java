@@ -12,14 +12,16 @@ public class DepGroupRepository {
     private static final String MAIN_PERSISTENCE_UNIT = "mainPersistenceUnit";
     private static final String QUERY_PERSISTENCE_UNIT = "queryPersistenceUnit";
 
-    public void createDepGroups() {
+    public void createDepGroups(String groups) {
         EntityManager entityManager = getEntityManager(MAIN_PERSISTENCE_UNIT);
 
         entityManager.createNativeQuery("DELETE FROM dep_groups").executeUpdate();
-        entityManager.persist(new DepGroup("访问安全组"));
-        entityManager.persist(new DepGroup("流程管理组"));
-        entityManager.persist(new DepGroup("文件管理组"));
-        entityManager.persist(new DepGroup("公共支持组"));
+
+        String[] groupNames = groups.split(",");
+        for (String groupName : groupNames) {
+            String[] texts = groupName.split("-");
+            entityManager.persist(new DepGroup(texts[0], texts[1]));
+        }
 
         entityManagerClose(entityManager);
     }
