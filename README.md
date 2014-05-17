@@ -3,9 +3,12 @@
 ### [Requires][url1]
 
 ### TODO LIST
-- [ ] when blog exist, stop fetch blog
 - [ ] add group table and insert record
 - [ ] add colleague table and insert record
+- [ ] add mail statistics info
+- [ ] add send mail function with sae
+- [ ] use a base class to exact fetcher same code
+- [x] when blog exist, stop fetch blog
 - [x] exact fetch from controller to service
 - [x] add iteye next page function
 - [x] add csdn next page function

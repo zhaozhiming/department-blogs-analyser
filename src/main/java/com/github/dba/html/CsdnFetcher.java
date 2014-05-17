@@ -19,19 +19,25 @@ public class CsdnFetcher {
     private static final Log log = LogFactory.getLog(CsdnFetcher.class);
     private static final double CSDN_PAGE_COUNT = 50d;
     public static final String CSDN_KEY_WORD = "csdn";
+    private boolean giveUp = false;
 
     @Autowired
     private BlogRepository blogRepository;
 
     public void fetch(String url) throws Exception {
-        Document doc = fetchPage(format("%s?viewmode=contents", url));
-        double totalPage = getTotalPage(doc);
+        fetchPage(format("%s?viewmode=contents", url));
+        if (giveUp) return;
+
+        double totalPage = getTotalPage(url);
         for (int i = 2; i <= totalPage; i++) {
+            if (giveUp) return;
+
             fetchPage(format("%s/article/list/%d?viewmode=contents", url, i));
         }
     }
 
-    private double getTotalPage(Document doc) {
+    private double getTotalPage(String url) throws Exception {
+        Document doc = fetchUrlDoc(url);
         Elements statistics = doc.select("#blog_statistics li");
         int total = 0;
         for (int i = 0; i <= 2; i++) {
@@ -40,14 +46,13 @@ public class CsdnFetcher {
         return Math.ceil(total / CSDN_PAGE_COUNT);
     }
 
-    private Document fetchPage(String url) throws Exception {
+    private void fetchPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
-        fetchBlog(doc, "article_toplist", url);
-        fetchBlog(doc, "article_list", url);
-        return doc;
+        fetchBlogs(doc, "article_toplist", url);
+        fetchBlogs(doc, "article_list", url);
     }
 
-    private void fetchBlog(Document doc, String elementId, String url) throws Exception {
+    private void fetchBlogs(Document doc, String elementId, String url) throws Exception {
         Elements blogs = doc.select(format("#%s div.list_item.list_view", elementId));
         log.debug("blog size:" + blogs.size());
 
@@ -72,7 +77,10 @@ public class CsdnFetcher {
             Elements tags = detailDoc.select("#article_details div.tag2box a");
             Author author = Author.getAuthorBy(tags);
 
-            if (blogRepository.isBlogExist(CSDN_KEY_WORD, blogId)) break;
+            if (blogRepository.isBlogExist(CSDN_KEY_WORD, blogId)) {
+                giveUp = true;
+                return;
+            }
 
             blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
         }
