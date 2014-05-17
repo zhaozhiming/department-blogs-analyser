@@ -4,6 +4,7 @@
 
 ### TODO LIST
 - [ ] fix too many connect bug
+- [ ] when blog exist, stop fetch blog
 - [x] add iteye next page function
 - [x] add csdn next page function
 - [x] set unique key with blog id and website

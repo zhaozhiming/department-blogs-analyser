@@ -4,7 +4,6 @@ import com.github.dba.model.Author;
 import com.github.dba.model.Blog;
 import com.github.dba.repo.BlogRepository;
 import com.github.dba.util.DbaUtil;
-import com.google.common.collect.Lists;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
@@ -20,10 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import static java.lang.Integer.valueOf;
+import static java.lang.String.format;
 
 @Controller
 public class MainController {
@@ -48,45 +47,62 @@ public class MainController {
         String[] urlArray = urls.split(",");
         log.debug("urls:" + Arrays.toString(urlArray));
 
-        List<Blog> blogList = Lists.newArrayList();
         for (String url : urlArray) {
             if (url.contains(CSDN_KEY_WORD)) {
-                Document doc = fetchUrlDoc(url + "?viewmode=contents");
-                blogList.addAll(fetchCsdnBlog(doc, "article_toplist", url));
-                blogList.addAll(fetchCsdnBlog(doc, "article_list", url));
-
-                Elements statistics = doc.select("#blog_statistics li");
-                int total = 0;
-                for (int i = 0; i <= 2; i++) {
-                    total += fetchNumber(statistics.get(i).text());
-                }
-                double totalPage = Math.ceil(total / CSDN_PAGE_COUNT);
-                for (int i = 2; i <= totalPage; i++) {
-                    Document pageDoc = fetchUrlDoc(String.format("%s/article/list/%d?viewmode=contents", url, i));
-                    blogList.addAll(fetchCsdnBlog(pageDoc, "article_toplist", url));
-                    blogList.addAll(fetchCsdnBlog(pageDoc, "article_list", url));
-                }
-
-            } else {
-                Document doc = fetchUrlDoc(url);
-                blogList.addAll(fetchIteyeBlog(doc, url));
-
-                int total = fetchNumber(doc.select("#blog_menu a").get(0).text());
-                double totalPage = Math.ceil(total / ITEYE_PAGE_COUNT);
-                for (int i = 2; i <= totalPage; i++) {
-                    Document pageDoc = fetchUrlDoc(String.format("%s/?page=%d", url, i));
-                    blogList.addAll(fetchIteyeBlog(pageDoc, url));
-                }
+                csdn(url);
+                continue;
             }
+            iteye(url);
         }
 
-        log.debug(blogList);
         log.debug("parse url finish");
         return "hehe";
     }
 
-    private List<Blog> fetchIteyeBlog(Document doc, String url) throws Exception {
-        List<Blog> blogList = Lists.newArrayList();
+    private void iteye(String url) throws Exception {
+        Document doc = fetchIteye(url);
+        double totalPage = getIteyeTotalPage(doc);
+        for (int i = 2; i <= totalPage; i++) {
+            fetchIteye(format("%s/?page=%d", url, i));
+        }
+    }
+
+    private void csdn(String url) throws Exception {
+        Document doc = fetchCsdn(format("%s?viewmode=contents", url));
+        double totalPage = getCsdnTotalPage(doc);
+        for (int i = 2; i <= totalPage; i++) {
+            fetchCsdn(format("%s/article/list/%d?viewmode=contents", url, i));
+        }
+    }
+
+    private Document fetchIteye(String url) throws Exception {
+        Document doc = fetchUrlDoc(url);
+        fetchIteyeBlog(doc, url);
+        return doc;
+    }
+
+    private double getIteyeTotalPage(Document doc) {
+        int total = fetchNumber(doc.select("#blog_menu a").get(0).text());
+        return Math.ceil(total / ITEYE_PAGE_COUNT);
+    }
+
+    private double getCsdnTotalPage(Document doc) {
+        Elements statistics = doc.select("#blog_statistics li");
+        int total = 0;
+        for (int i = 0; i <= 2; i++) {
+            total += fetchNumber(statistics.get(i).text());
+        }
+        return Math.ceil(total / CSDN_PAGE_COUNT);
+    }
+
+    private Document fetchCsdn(String url) throws Exception {
+        Document doc = fetchUrlDoc(url);
+        fetchCsdnBlog(doc, "article_toplist", url);
+        fetchCsdnBlog(doc, "article_list", url);
+        return doc;
+    }
+
+    private void fetchIteyeBlog(Document doc, String url) throws Exception {
         Elements blogs = doc.select("#main div.blog_main");
         log.debug("blog size:" + blogs.size());
 
@@ -106,24 +122,21 @@ public class MainController {
             int comment = fetchNumber(
                     blog.select("div.blog_bottom li").get(2).text());
 
-            if(blogRepository.isBlogExist(ITEYE_KEY_WORD, blogId)) break;
+            if (blogRepository.isBlogExist(ITEYE_KEY_WORD, blogId)) break;
 
             blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD));
-            blogList.add(new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD));
         }
-        return blogList;
     }
 
-    private List<Blog> fetchCsdnBlog(Document doc, String elementId, String url) throws Exception {
-        List<Blog> blogList = Lists.newArrayList();
-        Elements blogs = doc.select(String.format("#%s div.list_item.list_view", elementId));
+    private void fetchCsdnBlog(Document doc, String elementId, String url) throws Exception {
+        Elements blogs = doc.select(format("#%s div.list_item.list_view", elementId));
         log.debug("blog size:" + blogs.size());
 
         for (Element blog : blogs) {
             Element titleLink = blog.select("div.article_title span.link_title a").get(0);
             String link = titleLink.attr("href");
             link = url.substring(0, url.lastIndexOf("/") + 1) + link;
-            log.debug(String.format("blog detail link:%s", link));
+            log.debug(format("blog detail link:%s", link));
 
             String title = fetchTitle(titleLink);
             String blogId = fetchBlogId(link);
@@ -140,12 +153,10 @@ public class MainController {
             Elements tags = detailDoc.select("#article_details div.tag2box a");
             Author author = getAuthor(tags);
 
-            if(blogRepository.isBlogExist(CSDN_KEY_WORD, blogId)) break;
+            if (blogRepository.isBlogExist(CSDN_KEY_WORD, blogId)) break;
 
             blogRepository.createBlog(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
-            blogList.add(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
         }
-        return blogList;
     }
 
     private Document fetchUrlDoc(String url) throws IOException {
