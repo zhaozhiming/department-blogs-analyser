@@ -28,13 +28,18 @@ public class Author {
         }
     }
 
+    public Author(String groupName, String name) {
+        this.groupName = groupName;
+        this.name = name;
+    }
+
     public static Author getAuthorBy(Elements tags) {
         if (tags.size() == 0) return Author.defaultAuthor();
         return new Author(tags.get(tags.size() - 1).text());
     }
 
-    private static Author defaultAuthor() {
-        return new Author("W-赵芝明");
+    public static Author defaultAuthor() {
+        return new Author("unknown", "unknown");
     }
 
     private String fetchGroupName(String groupShort) {

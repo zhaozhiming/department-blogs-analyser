@@ -3,6 +3,7 @@ package com.github.dba.html;
 import com.github.dba.model.Author;
 import com.github.dba.model.Blog;
 import com.github.dba.repo.BlogRepository;
+import com.github.dba.service.AuthorService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.nodes.Document;
@@ -23,6 +24,9 @@ public class CsdnFetcher {
 
     @Autowired
     private BlogRepository blogRepository;
+
+    @Autowired
+    private AuthorService authorService;
 
     public void fetch(String url) throws Exception {
         fetchPage(format("%s?viewmode=contents", url));
@@ -75,7 +79,7 @@ public class CsdnFetcher {
             Document detailDoc = fetchUrlDoc(link);
 
             Elements tags = detailDoc.select("#article_details div.tag2box a");
-            Author author = Author.getAuthorBy(tags);
+            Author author = authorService.fetchAuthor(tags);
 
             if (blogRepository.isBlogExist(CSDN_KEY_WORD, blogId)) {
                 giveUp = true;
