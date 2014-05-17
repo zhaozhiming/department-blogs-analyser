@@ -31,6 +31,7 @@ public class MainController {
     private static final String TOP_TEXT = "[置顶]";
     private static final String ITEYE_KEY_WORD = "iteye";
     private static final String CSDN_KEY_WORD = "csdn";
+    private static final double CSDN_PAGE_COUNT = 50d;
     private static final double ITEYE_PAGE_COUNT = 15d;
 
     @Autowired
@@ -53,6 +54,19 @@ public class MainController {
                 Document doc = fetchUrlDoc(url + "?viewmode=contents");
                 blogList.addAll(fetchCsdnBlog(doc, "article_toplist", url));
                 blogList.addAll(fetchCsdnBlog(doc, "article_list", url));
+
+                Elements statistics = doc.select("#blog_statistics li");
+                int total = 0;
+                for (int i = 0; i <= 2; i++) {
+                    total += fetchNumber(statistics.get(i).text());
+                }
+                double totalPage = Math.ceil(total / CSDN_PAGE_COUNT);
+                for (int i = 2; i <= totalPage; i++) {
+                    Document pageDoc = fetchUrlDoc(String.format("%s/article/list/%d?viewmode=contents", url, i));
+                    blogList.addAll(fetchCsdnBlog(pageDoc, "article_toplist", url));
+                    blogList.addAll(fetchCsdnBlog(pageDoc, "article_list", url));
+                }
+
             } else {
                 Document doc = fetchUrlDoc(url);
                 blogList.addAll(fetchIteyeBlog(doc, url));
@@ -60,7 +74,7 @@ public class MainController {
                 int total = fetchNumber(doc.select("#blog_menu a").get(0).text());
                 double totalPage = Math.ceil(total / ITEYE_PAGE_COUNT);
                 for (int i = 2; i <= totalPage; i++) {
-                    Document pageDoc = fetchUrlDoc(url + "/?page=" + i);
+                    Document pageDoc = fetchUrlDoc(String.format("%s/?page=%d", url, i));
                     blogList.addAll(fetchIteyeBlog(pageDoc, url));
                 }
             }
