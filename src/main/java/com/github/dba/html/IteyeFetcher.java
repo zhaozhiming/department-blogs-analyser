@@ -3,6 +3,7 @@ package com.github.dba.html;
 import com.github.dba.model.Author;
 import com.github.dba.model.Blog;
 import com.github.dba.repo.BlogRepository;
+import com.github.dba.service.AuthorService;
 import com.github.dba.util.DbaUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +25,9 @@ public class IteyeFetcher {
 
     @Autowired
     private BlogRepository blogRepository;
+
+    @Autowired
+    private AuthorService authorService;
 
     public void fetch(String url) throws Exception {
         fetchBlogs(url);
@@ -55,7 +59,7 @@ public class IteyeFetcher {
             log.debug(format("blog detail link:%s", link));
             String blogId = fetchBlogId(link);
             Elements tags = blog.select("div.blog_title div.news_tag a");
-            Author author = Author.getAuthorBy(tags);
+            Author author = authorService.fetchAuthor(tags);
 
             String time = DbaUtil.parseIteyeTime(
                     blog.select("div.blog_bottom li.date").get(0).text());

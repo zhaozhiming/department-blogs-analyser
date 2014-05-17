@@ -3,12 +3,12 @@
 ### [Requires][url1]
 
 ### TODO LIST
-- [ ] add group table and insert record
 - [ ] add colleague table and insert record
-- [ ] record unknown author when have not author tag
 - [ ] add mail statistics info
 - [ ] add send mail function with sae
 - [ ] make fetch url to blog/fetch
+- [x] record unknown author when have not author tag
+- [x] add group table and insert record
 - [x] when blog exist, stop fetch blog
 - [x] exact fetch from controller to service
 - [x] add iteye next page function
