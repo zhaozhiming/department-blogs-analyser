@@ -5,6 +5,7 @@
 ### TODO LIST
 - [ ] add mail statistics info
 - [ ] add send mail function with sae
+- [ ] when old blog exist, update it
 - [x] make fetch url to blog/fetch
 - [x] add member table and insert record
 - [x] record unknown author when have not author tag

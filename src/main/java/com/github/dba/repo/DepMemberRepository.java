@@ -28,6 +28,7 @@ public class DepMemberRepository {
         entityManager.persist(new DepMember("GYY", "郭杨勇"));
         entityManager.persist(new DepMember("WZJ", "魏中佳"));
         entityManager.persist(new DepMember("LDP", "兰东平"));
+        entityManager.persist(new DepMember("WJ", "刘杰"));
 
         entityManagerClose(entityManager);
     }
