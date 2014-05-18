@@ -4,7 +4,7 @@ import com.github.dba.model.Author;
 import com.github.dba.model.DepGroup;
 import com.github.dba.model.DepMember;
 import com.github.dba.repo.DepGroupRepository;
-import com.github.dba.repo.DepMemberRepository1;
+import com.github.dba.repo.DepMemberRepository;
 import com.google.common.base.Strings;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class AuthorService {
     private DepGroupRepository depGroupRepository;
 
     @Autowired
-    private DepMemberRepository1 depMemberRepository;
+    private DepMemberRepository depMemberRepository;
 
     public Author fetchAuthor(Elements tags) {
         if (tags.size() == 0) return Author.defaultAuthor();

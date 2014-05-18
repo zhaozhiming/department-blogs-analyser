@@ -5,7 +5,7 @@ import com.github.dba.html.IteyeFetcher;
 import com.github.dba.model.DepGroup;
 import com.github.dba.model.DepMember;
 import com.github.dba.repo.DepGroupRepository;
-import com.github.dba.repo.DepMemberRepository1;
+import com.github.dba.repo.DepMemberRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class MainController {
     private DepGroupRepository depGroupRepository;
 
     @Autowired
-    private DepMemberRepository1 depMemberRepository;
+    private DepMemberRepository depMemberRepository;
 
     @Value("${urls}")
     private String urls;
