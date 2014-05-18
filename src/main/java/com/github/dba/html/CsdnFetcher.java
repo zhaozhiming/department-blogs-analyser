@@ -2,7 +2,7 @@ package com.github.dba.html;
 
 import com.github.dba.model.Author;
 import com.github.dba.model.Blog;
-import com.github.dba.repo.BlogRepository1;
+import com.github.dba.repo.BlogRepository;
 import com.github.dba.service.AuthorService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +22,7 @@ public class CsdnFetcher {
     public static final String CSDN_KEY_WORD = "csdn";
 
     @Autowired
-    private BlogRepository1 blogRepository;
+    private BlogRepository blogRepository;
 
     @Autowired
     private AuthorService authorService;

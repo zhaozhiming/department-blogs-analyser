@@ -2,7 +2,7 @@ package com.github.dba.html;
 
 import com.github.dba.model.Author;
 import com.github.dba.model.Blog;
-import com.github.dba.repo.BlogRepository1;
+import com.github.dba.repo.BlogRepository;
 import com.github.dba.service.AuthorService;
 import com.github.dba.util.DbaUtil;
 import org.apache.commons.logging.Log;
@@ -23,7 +23,7 @@ public class IteyeFetcher {
     private static final String ITEYE_KEY_WORD = "iteye";
 
     @Autowired
-    private BlogRepository1 blogRepository;
+    private BlogRepository blogRepository;
 
     @Autowired
     private AuthorService authorService;
