@@ -80,6 +80,8 @@ public class CsdnFetcher {
             Blog result = blogRepository.findByBlogIdAndWebsite(blogId, CSDN_KEY_WORD);
             if (result != null) {
                 blogRepository.delete(result);
+                blogRepository.save(result);
+                continue;
             }
 
             blogRepository.save(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
