@@ -3,8 +3,9 @@ package com.github.dba.controller;
 import com.github.dba.html.CsdnFetcher;
 import com.github.dba.html.IteyeFetcher;
 import com.github.dba.model.DepGroup;
-import com.github.dba.repo.DepGroupRepository1;
-import com.github.dba.repo.DepMemberRepository;
+import com.github.dba.model.DepMember;
+import com.github.dba.repo.DepGroupRepository;
+import com.github.dba.repo.DepMemberRepository1;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +29,10 @@ public class MainController {
     private IteyeFetcher iteyeFetcher;
 
     @Autowired
-    private DepGroupRepository1 depGroupRepository1;
+    private DepGroupRepository depGroupRepository;
 
     @Autowired
-    private DepMemberRepository depMemberRepository;
+    private DepMemberRepository1 depMemberRepository;
 
     @Value("${urls}")
     private String urls;
@@ -61,12 +62,12 @@ public class MainController {
     public void createGroups() {
         log.debug("create groups start");
         log.debug("group names:" + groups);
-        depGroupRepository1.deleteAll();
+        depGroupRepository.deleteAll();
 
         String[] groupNames = groups.split(",");
         for (String groupName : groupNames) {
             String[] texts = groupName.split("-");
-            depGroupRepository1.save(new DepGroup(texts[0], texts[1]));
+            depGroupRepository.save(new DepGroup(texts[0], texts[1]));
         }
         log.debug("create groups end");
     }
@@ -75,7 +76,16 @@ public class MainController {
     @ResponseStatus(value = HttpStatus.OK)
     public void createMembers() {
         log.debug("create members start");
-        depMemberRepository.createDepMembers();
+        depMemberRepository.deleteAll();
+
+        depMemberRepository.save(new DepMember("ZZM", "赵芝明"));
+        depMemberRepository.save(new DepMember("WSL", "王苏龙"));
+        depMemberRepository.save(new DepMember("FCH", "傅采慧"));
+        depMemberRepository.save(new DepMember("SY", "宋裕"));
+        depMemberRepository.save(new DepMember("GYY", "郭杨勇"));
+        depMemberRepository.save(new DepMember("WZJ", "魏中佳"));
+        depMemberRepository.save(new DepMember("LDP", "兰东平"));
+        depMemberRepository.save(new DepMember("WJ", "刘杰"));
         log.debug("create members end");
     }
 }

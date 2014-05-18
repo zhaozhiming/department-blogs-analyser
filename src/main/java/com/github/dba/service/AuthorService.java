@@ -2,8 +2,9 @@ package com.github.dba.service;
 
 import com.github.dba.model.Author;
 import com.github.dba.model.DepGroup;
-import com.github.dba.repo.DepGroupRepository1;
-import com.github.dba.repo.DepMemberRepository;
+import com.github.dba.model.DepMember;
+import com.github.dba.repo.DepGroupRepository;
+import com.github.dba.repo.DepMemberRepository1;
 import com.google.common.base.Strings;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,10 @@ import org.springframework.stereotype.Service;
 public class AuthorService {
 
     @Autowired
-    private DepGroupRepository1 depGroupRepository;
+    private DepGroupRepository depGroupRepository;
 
     @Autowired
-    private DepMemberRepository depMemberRepository;
+    private DepMemberRepository1 depMemberRepository;
 
     public Author fetchAuthor(Elements tags) {
         if (tags.size() == 0) return Author.defaultAuthor();
@@ -30,7 +31,9 @@ public class AuthorService {
         DepGroup group = depGroupRepository.findByGroupShort(texts[0]);
         String groupName = group != null ? group.getName() : "unknown";
 
-        String memberName = depMemberRepository.findMemberFullNameByShort(texts[1]);
+
+        DepMember member = depMemberRepository.findByMemberShort(texts[1]);
+        String memberName = member != null ? member.getName() : "unknown";
 
         return new Author(groupName, memberName);
     }
