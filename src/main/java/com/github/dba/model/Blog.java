@@ -2,7 +2,7 @@ package com.github.dba.model;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "blogs")
 @Table(name = "blogs", uniqueConstraints = @UniqueConstraint(columnNames = {"blogId", "website"}))
 public class Blog {
     @Id
