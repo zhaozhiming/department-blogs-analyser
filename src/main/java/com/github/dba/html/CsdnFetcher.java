@@ -2,7 +2,6 @@ package com.github.dba.html;
 
 import com.github.dba.model.Author;
 import com.github.dba.model.Blog;
-import com.github.dba.repo.BlogRepository;
 import com.github.dba.repo.BlogRepository1;
 import com.github.dba.service.AuthorService;
 import org.apache.commons.logging.Log;
@@ -23,10 +22,7 @@ public class CsdnFetcher {
     public static final String CSDN_KEY_WORD = "csdn";
 
     @Autowired
-    private BlogRepository blogRepository;
-
-    @Autowired
-    private BlogRepository1 blogRepository1;
+    private BlogRepository1 blogRepository;
 
     @Autowired
     private AuthorService authorService;
@@ -81,13 +77,12 @@ public class CsdnFetcher {
             Elements tags = detailDoc.select("#article_details div.tag2box a");
             Author author = authorService.fetchAuthor(tags);
 
-            Blog result = blogRepository1.findByBlogIdAndWebsite(blogId, CSDN_KEY_WORD);
+            Blog result = blogRepository.findByBlogIdAndWebsite(blogId, CSDN_KEY_WORD);
             if (result != null) {
-                blogRepository.updateBlog(result.getId(), title, view, comment, author);
-                continue;
+                blogRepository.delete(result);
             }
 
-            blogRepository1.save(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
+            blogRepository.save(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
         }
     }
 
