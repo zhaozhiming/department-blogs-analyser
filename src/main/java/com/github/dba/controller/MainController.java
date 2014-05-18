@@ -2,7 +2,8 @@ package com.github.dba.controller;
 
 import com.github.dba.html.CsdnFetcher;
 import com.github.dba.html.IteyeFetcher;
-import com.github.dba.repo.DepGroupRepository;
+import com.github.dba.model.DepGroup;
+import com.github.dba.repo.DepGroupRepository1;
 import com.github.dba.repo.DepMemberRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,7 +28,7 @@ public class MainController {
     private IteyeFetcher iteyeFetcher;
 
     @Autowired
-    private DepGroupRepository depGroupRepository;
+    private DepGroupRepository1 depGroupRepository1;
 
     @Autowired
     private DepMemberRepository depMemberRepository;
@@ -60,14 +61,20 @@ public class MainController {
     public void createGroups() {
         log.debug("create groups start");
         log.debug("group names:" + groups);
-        depGroupRepository.createDepGroups(groups);
+        depGroupRepository1.deleteAll();
+
+        String[] groupNames = groups.split(",");
+        for (String groupName : groupNames) {
+            String[] texts = groupName.split("-");
+            depGroupRepository1.save(new DepGroup(texts[0], texts[1]));
+        }
         log.debug("create groups end");
     }
 
     @RequestMapping(value = "/member/create", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public void createMembers() {
-            log.debug("create members start");
+        log.debug("create members start");
         depMemberRepository.createDepMembers();
         log.debug("create members end");
     }

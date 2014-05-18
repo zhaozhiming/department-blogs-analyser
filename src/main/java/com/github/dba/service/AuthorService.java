@@ -1,7 +1,8 @@
 package com.github.dba.service;
 
 import com.github.dba.model.Author;
-import com.github.dba.repo.DepGroupRepository;
+import com.github.dba.model.DepGroup;
+import com.github.dba.repo.DepGroupRepository1;
 import com.github.dba.repo.DepMemberRepository;
 import com.google.common.base.Strings;
 import org.jsoup.select.Elements;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class AuthorService {
 
     @Autowired
-    private DepGroupRepository depGroupRepository;
+    private DepGroupRepository1 depGroupRepository;
 
     @Autowired
     private DepMemberRepository depMemberRepository;
@@ -26,7 +27,9 @@ public class AuthorService {
         String[] texts = tag.split("-");
         if (texts.length != 2) return Author.defaultAuthor();
 
-        String groupName = depGroupRepository.findGroupFullNameByShort(texts[0]);
+        DepGroup group = depGroupRepository.findByGroupShort(texts[0]);
+        String groupName = group != null ? group.getName() : "unknown";
+
         String memberName = depMemberRepository.findMemberFullNameByShort(texts[1]);
 
         return new Author(groupName, memberName);

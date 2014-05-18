@@ -63,6 +63,7 @@ public class BlogRepository {
     private void entityManagerClose(EntityManager entityManager) {
         entityManager.getTransaction().commit();
         entityManager.close();
+        entityManager.getEntityManagerFactory().close();
     }
 
 }
