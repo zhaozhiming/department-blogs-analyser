@@ -29,16 +29,16 @@ public class IteyeFetcher {
     private AuthorService authorService;
 
     public void fetch(String url) throws Exception {
-        double totalPage = getTotalPage(url);
+        int totalPage = getTotalPage(url);
         for (int i = 1; i <= totalPage; i++) {
             fetchPage(format("%s/?page=%d", url, i));
         }
     }
 
-    private double getTotalPage(String url) throws Exception {
+    private int getTotalPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
         int total = fetchNumber(doc.select("#blog_menu a").get(0).text());
-        return Math.ceil(total / ITEYE_PAGE_COUNT);
+        return (int) Math.ceil(total / ITEYE_PAGE_COUNT);
     }
 
     private void fetchPage(String url) throws Exception {

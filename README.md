@@ -7,6 +7,7 @@
 - [ ] add statistics page
 - [ ] add mail statistics info
 - [ ] add send mail function with sae
+- [ ] modify member table to add group short attribute 
 - [x] fix mysql too many connections bug
 - [x] when old blog exist, update it
 - [x] make fetch url to blog/fetch

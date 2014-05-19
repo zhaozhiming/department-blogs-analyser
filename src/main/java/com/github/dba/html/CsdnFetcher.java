@@ -28,10 +28,21 @@ public class CsdnFetcher {
     private AuthorService authorService;
 
     public void fetch(String url) throws Exception {
-        double totalPage = getTotalPage(url);
+        int totalPage = getTotalPage(url + "?viewmode=contents");
+        System.out.printf("total page: %s%n", totalPage);
         for (int i = 1; i <= totalPage; i++) {
             fetchPage(format("%s/article/list/%d?viewmode=contents", url, i));
         }
+    }
+
+    private int getTotalPage(String url) throws Exception {
+        Document doc = fetchUrlDoc(url);
+        Elements statistics = doc.select("#blog_statistics li");
+        int total = 0;
+        for (int i = 0; i <= 2; i++) {
+            total += fetchNumber(statistics.get(i).text());
+        }
+        return (int) Math.ceil(total / CSDN_PAGE_COUNT);
     }
 
     private void fetchPage(String url) throws Exception {
@@ -40,24 +51,13 @@ public class CsdnFetcher {
         fetchBlogs(doc, "article_list", url);
     }
 
-    private double getTotalPage(String url) throws Exception {
-        Document doc = fetchUrlDoc(url);
-        Elements statistics = doc.select("#blog_statistics li");
-        int total = 0;
-        for (int i = 0; i <= 2; i++) {
-            total += fetchNumber(statistics.get(i).text());
-        }
-        return Math.ceil(total / CSDN_PAGE_COUNT);
-    }
-
     private void fetchBlogs(Document doc, String elementId, String url) throws Exception {
         Elements blogs = doc.select(format("#%s div.list_item.list_view", elementId));
         log.debug("blog size:" + blogs.size());
 
         for (Element blog : blogs) {
             Element titleLink = blog.select("div.article_title span.link_title a").get(0);
-            String link = titleLink.attr("href");
-            link = url.substring(0, url.lastIndexOf("/") + 1) + link;
+            String link = String.format("http://blog.csdn.net%s", titleLink.attr("href"));
             log.debug(format("blog detail link:%s", link));
 
             String title = fetchTitle(titleLink);
