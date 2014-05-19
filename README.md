@@ -3,9 +3,11 @@
 ### [Requires][url1]
 
 ### TODO LIST
+- [ ] add query page
+- [ ] add statistics page
 - [ ] add mail statistics info
 - [ ] add send mail function with sae
-- [ ] fix mysql too many connections bug
+- [x] fix mysql too many connections bug
 - [x] when old blog exist, update it
 - [x] make fetch url to blog/fetch
 - [x] add member table and insert record
