@@ -28,22 +28,20 @@ public class CsdnFetcher {
     private AuthorService authorService;
 
     public void fetch(String url) throws Exception {
-        Document doc = fetchPage(format("%s?viewmode=contents", url));
-
-        double totalPage = getTotalPage(doc);
-        for (int i = 2; i <= totalPage; i++) {
+        double totalPage = getTotalPage(url);
+        for (int i = 1; i <= totalPage; i++) {
             fetchPage(format("%s/article/list/%d?viewmode=contents", url, i));
         }
     }
 
-    private Document fetchPage(String url) throws Exception {
+    private void fetchPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
         fetchBlogs(doc, "article_toplist", url);
         fetchBlogs(doc, "article_list", url);
-        return doc;
     }
 
-    private double getTotalPage(Document doc) throws Exception {
+    private double getTotalPage(String url) throws Exception {
+        Document doc = fetchUrlDoc(url);
         Elements statistics = doc.select("#blog_statistics li");
         int total = 0;
         for (int i = 0; i <= 2; i++) {

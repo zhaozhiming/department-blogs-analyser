@@ -29,23 +29,21 @@ public class IteyeFetcher {
     private AuthorService authorService;
 
     public void fetch(String url) throws Exception {
-        Document doc = fetchPage(url);
-
-        double totalPage = getTotalPage(doc);
-        for (int i = 2; i <= totalPage; i++) {
+        double totalPage = getTotalPage(url);
+        for (int i = 1; i <= totalPage; i++) {
             fetchPage(format("%s/?page=%d", url, i));
         }
     }
 
-    private Document fetchPage(String url) throws Exception {
+    private double getTotalPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
-        fetchBlogs(doc, url);
-        return doc;
-    }
-
-    private double getTotalPage(Document doc) throws Exception {
         int total = fetchNumber(doc.select("#blog_menu a").get(0).text());
         return Math.ceil(total / ITEYE_PAGE_COUNT);
+    }
+
+    private void fetchPage(String url) throws Exception {
+        Document doc = fetchUrlDoc(url);
+        fetchBlogs(doc, url);
     }
 
     private void fetchBlogs(Document doc, String url) throws Exception {
