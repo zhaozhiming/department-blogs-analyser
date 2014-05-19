@@ -71,8 +71,8 @@ public class IteyeFetcher {
 
             Blog result = blogRepository.findByBlogIdAndWebsite(blogId, ITEYE_KEY_WORD);
             if (result != null) {
-                blogRepository.delete(result);
-                blogRepository.save(result);
+                blogRepository.updateBlogFor(result.getId(), title, view, comment,
+                        author.getGroupName(), author.getName());
                 continue;
             }
 
