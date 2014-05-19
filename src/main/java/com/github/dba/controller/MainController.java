@@ -40,6 +40,9 @@ public class MainController {
     @Value("${groups}")
     private String groups;
 
+    @Value("${members}")
+    private String members;
+
     @RequestMapping(value = "/blog/fetch", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public void blogFetch() throws Exception {
@@ -76,16 +79,14 @@ public class MainController {
     @ResponseStatus(value = HttpStatus.OK)
     public void createMembers() {
         log.debug("create members start");
+        log.debug("member names:" + members);
         depMemberRepository.deleteAll();
 
-        depMemberRepository.save(new DepMember("ZZM", "赵芝明"));
-        depMemberRepository.save(new DepMember("WSL", "王苏龙"));
-        depMemberRepository.save(new DepMember("FCH", "傅采慧"));
-        depMemberRepository.save(new DepMember("SY", "宋裕"));
-        depMemberRepository.save(new DepMember("GYY", "郭杨勇"));
-        depMemberRepository.save(new DepMember("WZJ", "魏中佳"));
-        depMemberRepository.save(new DepMember("LDP", "兰东平"));
-        depMemberRepository.save(new DepMember("WJ", "刘杰"));
+        String[] membersArray = members.split(",");
+        for (String member : membersArray) {
+            String[] texts = member.split("-");
+            depMemberRepository.save(new DepMember(texts[0], texts[1], texts[2]));
+        }
         log.debug("create members end");
     }
 }

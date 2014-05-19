@@ -31,8 +31,7 @@ public class AuthorService {
         DepGroup group = depGroupRepository.findByGroupShort(texts[0]);
         String groupName = group != null ? group.getName() : "unknown";
 
-
-        DepMember member = depMemberRepository.findByMemberShort(texts[1]);
+        DepMember member = depMemberRepository.findByMemberShort(texts[1], texts[0]);
         String memberName = member != null ? member.getName() : "unknown";
 
         return new Author(groupName, memberName);

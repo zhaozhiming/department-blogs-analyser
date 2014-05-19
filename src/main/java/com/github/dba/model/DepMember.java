@@ -12,13 +12,17 @@ public class DepMember {
     private String memberShort;
 
     @Basic
+    private String groupShort;
+
+    @Basic
     private String name;
 
     public DepMember() {
     }
 
-    public DepMember(String memberShort, String name) {
+    public DepMember(String memberShort, String groupShort, String name) {
         this.memberShort = memberShort;
+        this.groupShort = groupShort;
         this.name = name;
     }
 
@@ -44,5 +48,13 @@ public class DepMember {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getGroupShort() {
+        return groupShort;
+    }
+
+    public void setGroupShort(String groupShort) {
+        this.groupShort = groupShort;
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface DepMemberRepository extends JpaRepository<DepMember, Long> {
 
-    @Query("select d from dep_members d where d.memberShort = :memberShort")
-    DepMember findByMemberShort(@Param("memberShort") String memberShort);
+    @Query("select d from dep_members d where d.memberShort = :memberShort and d.groupShort = :groupShort")
+    DepMember findByMemberShort(@Param("memberShort") String memberShort, @Param("groupShort") String groupShort);
 
 }
