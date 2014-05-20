@@ -89,4 +89,9 @@ public class MainController {
         }
         log.debug("create members end");
     }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String index() {
+        return "index";
+    }
 }
