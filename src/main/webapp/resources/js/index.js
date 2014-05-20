@@ -34,9 +34,6 @@ $(document).ready(function () {
                     $("tr").hover(function () {
                         $(this).toggleClass("positive");
                     });
-
-                    var searchKeywords = $("#searchKeyword").val().split(/\s+/);
-                    $('body td').highlight(searchKeywords);
                 });
         }
     };
@@ -50,11 +47,13 @@ $(document).ready(function () {
         for (var i = 0; i < result.length; i++) {
             console.log(result[i]);
             resultContent += "<tr>";
-            resultContent += "<td>" + result[i].jarName + "</td>";
-            resultContent += "<td>" + result[i].version + "</td>";
-            resultContent += "<td><a class='item' title='点击查看源码' target='_blank' href='";
-            resultContent += $("#showUrl").val() + "?sourceFilePath=" + result[i].sourceFilePath;
-            resultContent += "&jarFilePath=" + result[i].jarFilePath + "'>" + result[i].sourceFilePath + "</a></td>";
+            resultContent += "<td><a href='" + result[i].link + "'>" + result[i].title + "</a></td>";
+            resultContent += "<td>" + result[i].website + "</td>";
+            resultContent += "<td>" + result[i].author.name + "</td>";
+            resultContent += "<td>" + result[i].author.groupName + "</td>";
+            resultContent += "<td>" + result[i].view + "</td>";
+            resultContent += "<td>" + result[i].comment + "</td>";
+            resultContent += "<td>" + result[i].time + "</td>";
             resultContent += "</tr>";
         }
 
