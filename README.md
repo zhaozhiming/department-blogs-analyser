@@ -7,6 +7,7 @@
 - [ ] add mail statistics info
 - [ ] add send mail function with sae
 - [ ] add augular js to replace jsp
+- [x] add 3rd party web file to local
 - [x] add query page
 - [x] modify member table to add group short attribute 
 - [x] fix mysql too many connections bug

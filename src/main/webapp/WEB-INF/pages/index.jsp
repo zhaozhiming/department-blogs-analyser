@@ -4,11 +4,11 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <head>
     <title>Department Blog Analyser</title>
-    <link type="text/css" rel="stylesheet" href="http://cdn.staticfile.org/semantic-ui/0.16.1/css/semantic.min.css">
+    <link type="text/css" rel="stylesheet" href="<c:url value='/resources/css/semantic.min.css'/>">
 
-    <script type="text/javascript" src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.map"></script>
-    <script type="text/javascript" src="http://cdn.staticfile.org/semantic-ui/0.16.1/javascript/semantic.min.js"></script>
+    <script type="text/javascript" src="<c:url value='/resources/js/jquery-2.0.3.min.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/resources/js/jquery-2.0.3.min.map'/>"></script>
+    <script type="text/javascript" src="<c:url value='/resources/js/semantic.min.js'/>"></script>
     <script type="text/javascript" src="<c:url value='/resources/js/index.js'/>"></script>
 </head>
 <body>
