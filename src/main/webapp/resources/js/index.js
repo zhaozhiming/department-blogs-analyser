@@ -47,7 +47,7 @@ $(document).ready(function () {
         for (var i = 0; i < result.length; i++) {
             console.log(result[i]);
             resultContent += "<tr>";
-            resultContent += "<td><a href='" + result[i].link + "'>" + result[i].title + "</a></td>";
+            resultContent += "<td><a href='" + result[i].link + "' target='_blank'>" + result[i].title + "</a></td>";
             resultContent += "<td>" + result[i].website + "</td>";
             resultContent += "<td>" + result[i].author.name + "</td>";
             resultContent += "<td>" + result[i].author.groupName + "</td>";
