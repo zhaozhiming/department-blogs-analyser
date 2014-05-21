@@ -101,11 +101,6 @@ public class MainController {
         log.debug("create members finish");
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String index() {
-        return "index";
-    }
-
     @RequestMapping(value = "/search", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
     public
     @ResponseBody

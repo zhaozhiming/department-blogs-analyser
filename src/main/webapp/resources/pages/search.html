@@ -1,0 +1,46 @@
+<div id="searchForm" class="ui form">
+    <div class="two fields">
+        <div class="field">
+            <div class="ui icon input">
+                <input id="searchKeyword" type="text" name="searchKeyword" placeholder="请输入查询关键字...">
+                <i class="search icon"></i>
+            </div>
+        </div>
+
+        <div class="field">
+            <div id="searchBtn" class="ui blue submit button" ng-click="search()">查询</div>
+        </div>
+    </div>
+    <div class="ui error message"></div>
+</div>
+
+<div class="ui divider"></div>
+
+<div class="ui dimmer">
+    <div class="ui large text loader">查询中...</div>
+</div>
+
+<table class="ui table segment">
+    <thead>
+    <tr>
+        <th>标题</th>
+        <th>网站</th>
+        <th>作者</th>
+        <th>分组</th>
+        <th>访问量</th>
+        <th>评论数</th>
+        <th>发布时间</th>
+    </tr>
+    </thead>
+    <tbody id="result">
+        <tr ng-repeat="blog in blogs">
+            <td><a href="{{blog.link}}" target="_blank">{{blog.title}}</a></td>
+            <td>{{blog.website}}</td>
+            <td>{{blog.author.name}}</td>
+            <td>{{blog.author.groupName}}</td>
+            <td>{{blog.author.view}}</td>
+            <td>{{blog.comment}}</td>
+            <td>{{blog.time}}</td>
+        </tr>
+    </tbody>
+</table>
