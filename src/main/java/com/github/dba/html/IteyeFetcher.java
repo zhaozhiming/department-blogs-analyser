@@ -53,7 +53,7 @@ public class IteyeFetcher {
         for (Element blog : blogs) {
             Element titleElement = blog.select("div.blog_title h3 a").get(0);
             String title = fetchTitle(titleElement);
-            String link = url + titleElement.attr("href");
+            String link = url.substring(0, url.lastIndexOf("/")) + titleElement.attr("href");
             log.debug(format("blog detail link:%s", link));
             String blogId = fetchBlogId(link);
             Elements tags = blog.select("div.blog_title div.news_tag a");
