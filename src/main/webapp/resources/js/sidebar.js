@@ -21,7 +21,8 @@ function SearchController($scope, $http) {
     var setting = {
         onSuccess: function () {
             var queryData = {
-                "depGroup": $("#dep_group").val() || ""
+                "depGroup": $("#dep_group").val() || "",
+                "website": $("#website").val() || ""
             };
 
             $scope.search = function () {
@@ -34,9 +35,15 @@ function SearchController($scope, $http) {
 
     $('#searchForm').form(rules, setting);
 
-    $('.ui.dropdown').dropdown({
+    $('#group_selection').dropdown({
         onChange: function (value) {
             $("#dep_group").val(value);
+        }
+    });
+
+    $('#website_selection').dropdown({
+        onChange: function (value) {
+            $("#website").val(value);
         }
     });
 

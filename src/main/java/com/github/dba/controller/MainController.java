@@ -9,6 +9,7 @@ import com.github.dba.model.DepMember;
 import com.github.dba.repo.read.BlogReadRepository;
 import com.github.dba.repo.write.DepGroupWriteRepository;
 import com.github.dba.repo.write.DepMemberWriteRepository;
+import com.google.common.base.Strings;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -108,24 +109,31 @@ public class MainController {
     @RequestMapping(value = "/search", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
     public
     @ResponseBody
-    String search(@RequestParam("depGroup") final String depGroup) throws Exception {
+    String search(@RequestParam("depGroup") final String depGroup,
+                  @RequestParam("website") final String website) throws Exception {
         log.debug("search blog start");
         log.debug(format("group name:%s", depGroup));
+        log.debug(format("website:%s", website));
 
         Specification<Blog> spec = Specifications.where(new Specification<Blog>() {
             @Override
             public Predicate toPredicate(Root<Blog> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
 
-                if (!"所有分组".equals(depGroup)) {
-                    log.debug(format("in group name:%s", depGroup));
+                if (!Strings.isNullOrEmpty(depGroup) && !"所有分组".equals(depGroup)) {
                     predicate.getExpressions().add(
                             cb.equal(root.<Author>get("author").<String>get("groupName"), depGroup));
+                }
+
+                if (!Strings.isNullOrEmpty(website) && !"所有".equals(website)) {
+                    predicate.getExpressions().add(
+                            cb.equal(root.<String>get("website"), website));
                 }
 
                 return predicate;
             }
         });
+
         List<Blog> blogs = blogReadRepository.findAll(spec);
         String resultArrayJson = mapper.writeValueAsString(blogs);
         log.debug(format("resultArrayJson: %s", resultArrayJson));

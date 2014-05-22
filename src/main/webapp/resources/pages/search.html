@@ -1,9 +1,9 @@
-<div id="searchForm" class="ui form">
+<div id="searchForm" class="ui form segment">
     <div class="two fields">
         <div class="field">
             <input type="hidden" id="dep_group" name="dep_group">
-            <div class="ui selection dropdown">
-                <div class="text">所有分组</div>
+            <div id="group_selection" class="ui fluid selection dropdown">
+                <div class="text">分组</div>
                 <i class="dropdown icon"></i>
                 <div class="menu">
                     <div class="item">所有分组</div>
@@ -15,8 +15,19 @@
             </div>
         </div>
         <div class="field">
-            <div id="searchBtn" class="ui blue submit button" ng-click="search()">查询</div>
+            <input type="hidden" id="website" name="website">
+            <div id="website_selection" class="ui fluid selection dropdown">
+                <div class="text">网站来源</div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item">所有</div>
+                    <div class="item">csdn</div>
+                    <div class="item">iteye</div>
+                </div>
+            </div>
         </div>
+
+        <div id="searchBtn" class="ui blue submit button" ng-click="search()">查询</div>
     </div>
     <div class="ui error message"></div>
 </div>
