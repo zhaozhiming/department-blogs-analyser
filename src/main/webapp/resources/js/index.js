@@ -4,6 +4,8 @@ $(document).ready(function () {
     $('#sideBarMenu').click(function(){
         $('.ui.sidebar').sidebar('toggle');
     })
+
+    $('.ui.sidebar').sidebar('toggle');
 });
 
 
