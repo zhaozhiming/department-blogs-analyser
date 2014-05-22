@@ -4,10 +4,11 @@
 
 ### TODO LIST
 - [ ] add statistics page
+- [ ] query blog with different conditions
 - [ ] add send mail statistics info
 - [ ] add send mail function with sae
-- [ ] add connections pool manage function
-- [ ] use different persistence unit with jpa
+- [x] add connections pool manage function
+- [x] use different persistence unit with jpa
 - [x] add augular js to replace jsp
 - [x] add 3rd party web file to local
 - [x] add query page

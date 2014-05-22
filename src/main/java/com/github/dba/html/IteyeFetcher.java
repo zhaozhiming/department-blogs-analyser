@@ -2,7 +2,8 @@ package com.github.dba.html;
 
 import com.github.dba.model.Author;
 import com.github.dba.model.Blog;
-import com.github.dba.repo.BlogRepository;
+import com.github.dba.repo.read.BlogReadRepository;
+import com.github.dba.repo.write.BlogWriteRepository;
 import com.github.dba.service.AuthorService;
 import com.github.dba.util.DbaUtil;
 import org.apache.commons.logging.Log;
@@ -23,7 +24,10 @@ public class IteyeFetcher {
     private static final String ITEYE_KEY_WORD = "iteye";
 
     @Autowired
-    private BlogRepository blogRepository;
+    private BlogWriteRepository blogWriteRepository;
+
+    @Autowired
+    private BlogReadRepository blogReadRepository;
 
     @Autowired
     private AuthorService authorService;
@@ -67,14 +71,14 @@ public class IteyeFetcher {
             int comment = fetchNumber(
                     blog.select("div.blog_bottom li").get(2).text());
 
-            Blog result = blogRepository.findByBlogIdAndWebsite(blogId, ITEYE_KEY_WORD);
+            Blog result = blogReadRepository.findByBlogIdAndWebsite(blogId, ITEYE_KEY_WORD);
             if (result != null) {
-                blogRepository.updateBlogFor(result.getId(), title, view, comment,
+                blogWriteRepository.updateBlogFor(result.getId(), title, view, comment,
                         author.getGroupName(), author.getName());
                 continue;
             }
 
-            blogRepository.save(new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD));
+            blogWriteRepository.save(new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD));
         }
     }
 }

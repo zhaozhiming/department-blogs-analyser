@@ -2,7 +2,8 @@ package com.github.dba.html;
 
 import com.github.dba.model.Author;
 import com.github.dba.model.Blog;
-import com.github.dba.repo.BlogRepository;
+import com.github.dba.repo.read.BlogReadRepository;
+import com.github.dba.repo.write.BlogWriteRepository;
 import com.github.dba.service.AuthorService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +23,10 @@ public class CsdnFetcher {
     public static final String CSDN_KEY_WORD = "csdn";
 
     @Autowired
-    private BlogRepository blogRepository;
+    private BlogWriteRepository blogWriteRepository;
+
+    @Autowired
+    private BlogReadRepository blogReadRepository;
 
     @Autowired
     private AuthorService authorService;
@@ -47,11 +51,11 @@ public class CsdnFetcher {
 
     private void fetchPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
-        fetchBlogs(doc, "article_toplist", url);
-        fetchBlogs(doc, "article_list", url);
+        fetchBlogs(doc, "article_toplist");
+        fetchBlogs(doc, "article_list");
     }
 
-    private void fetchBlogs(Document doc, String elementId, String url) throws Exception {
+    private void fetchBlogs(Document doc, String elementId) throws Exception {
         Elements blogs = doc.select(format("#%s div.list_item.list_view", elementId));
         log.debug("blog size:" + blogs.size());
 
@@ -75,14 +79,14 @@ public class CsdnFetcher {
             Elements tags = detailDoc.select("#article_details div.tag2box a");
             Author author = authorService.fetchAuthor(tags);
 
-            Blog result = blogRepository.findByBlogIdAndWebsite(blogId, CSDN_KEY_WORD);
+            Blog result = blogReadRepository.findByBlogIdAndWebsite(blogId, CSDN_KEY_WORD);
             if (result != null) {
-                blogRepository.updateBlogFor(result.getId(), title, view, comment,
+                blogWriteRepository.updateBlogFor(result.getId(), title, view, comment,
                         author.getGroupName(), author.getName());
                 continue;
             }
 
-            blogRepository.save(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
+            blogWriteRepository.save(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
         }
     }
 

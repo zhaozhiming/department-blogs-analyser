@@ -5,9 +5,9 @@ import com.github.dba.html.IteyeFetcher;
 import com.github.dba.model.Blog;
 import com.github.dba.model.DepGroup;
 import com.github.dba.model.DepMember;
-import com.github.dba.repo.BlogRepository;
-import com.github.dba.repo.DepGroupRepository;
-import com.github.dba.repo.DepMemberRepository;
+import com.github.dba.repo.read.BlogReadRepository;
+import com.github.dba.repo.write.DepGroupWriteRepository;
+import com.github.dba.repo.write.DepMemberWriteRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -36,13 +36,13 @@ public class MainController {
     private IteyeFetcher iteyeFetcher;
 
     @Autowired
-    private DepGroupRepository depGroupRepository;
+    private DepGroupWriteRepository depGroupWriteRepository;
 
     @Autowired
-    private DepMemberRepository depMemberRepository;
+    private DepMemberWriteRepository depMemberWriteRepository;
 
     @Autowired
-    private BlogRepository blogRepository;
+    private BlogReadRepository blogReadRepository;
 
     @Value("${urls}")
     private String urls;
@@ -76,12 +76,12 @@ public class MainController {
     public void createGroups() {
         log.debug("create groups start");
         log.debug("group names:" + groups);
-        depGroupRepository.deleteAll();
+        depGroupWriteRepository.deleteAll();
 
         String[] groupNames = groups.split(",");
         for (String groupName : groupNames) {
             String[] texts = groupName.split("-");
-            depGroupRepository.save(new DepGroup(texts[0], texts[1]));
+            depGroupWriteRepository.save(new DepGroup(texts[0], texts[1]));
         }
         log.debug("create groups finish");
     }
@@ -91,12 +91,12 @@ public class MainController {
     public void createMembers() {
         log.debug("create members start");
         log.debug("member names:" + members);
-        depMemberRepository.deleteAll();
+        depMemberWriteRepository.deleteAll();
 
         String[] membersArray = members.split(",");
         for (String member : membersArray) {
             String[] texts = member.split("-");
-            depMemberRepository.save(new DepMember(texts[0], texts[1], texts[2]));
+            depMemberWriteRepository.save(new DepMember(texts[0], texts[1], texts[2]));
         }
         log.debug("create members finish");
     }
@@ -106,7 +106,7 @@ public class MainController {
     @ResponseBody
     String search() throws Exception {
         log.debug("search blog start");
-        List<Blog> blogs = blogRepository.findAll();
+        List<Blog> blogs = blogReadRepository.findAll();
         String resultArrayJson = mapper.writeValueAsString(blogs);
         log.debug(format("resultArrayJson: %s", resultArrayJson));
         log.debug("search blog finish");

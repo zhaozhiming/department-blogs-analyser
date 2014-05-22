@@ -3,8 +3,8 @@ package com.github.dba.service;
 import com.github.dba.model.Author;
 import com.github.dba.model.DepGroup;
 import com.github.dba.model.DepMember;
-import com.github.dba.repo.DepGroupRepository;
-import com.github.dba.repo.DepMemberRepository;
+import com.github.dba.repo.read.DepGroupReadRepository;
+import com.github.dba.repo.read.DepMemberReadRepository;
 import com.google.common.base.Strings;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 public class AuthorService {
 
     @Autowired
-    private DepGroupRepository depGroupRepository;
+    private DepGroupReadRepository depGroupReadRepository;
 
     @Autowired
-    private DepMemberRepository depMemberRepository;
+    private DepMemberReadRepository depMemberReadRepository;
 
     public Author fetchAuthor(Elements tags) {
         if (tags.size() == 0) return Author.defaultAuthor();
@@ -28,10 +28,10 @@ public class AuthorService {
         String[] texts = tag.split("-");
         if (texts.length != 2) return Author.defaultAuthor();
 
-        DepGroup group = depGroupRepository.findByGroupShort(texts[0]);
+        DepGroup group = depGroupReadRepository.findByGroupShort(texts[0]);
         String groupName = group != null ? group.getName() : "unknown";
 
-        DepMember member = depMemberRepository.findByMemberShort(texts[1], texts[0]);
+        DepMember member = depMemberReadRepository.findByMemberShort(texts[1], texts[0]);
         String memberName = member != null ? member.getName() : "unknown";
 
         return new Author(groupName, memberName);

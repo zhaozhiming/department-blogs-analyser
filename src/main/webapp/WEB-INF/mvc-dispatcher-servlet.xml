@@ -21,15 +21,104 @@
     <mvc:annotation-driven/>
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
-    <jpa:repositories base-package="com.github.dba"/>
+    <bean id="persistenceUnitManager"
+          class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
+        <property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml"/>
+        <!--  comment dataSourceLooup to use jndi -->
+        <property name="dataSourceLookup">
+            <bean class="org.springframework.jdbc.datasource.lookup.BeanFactoryDataSourceLookup"/>
+        </property>
+    </bean>
 
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+    <!--write persistence config-->
+    <bean id="writeJpaVendor"
+          class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="showSql" value="true"/>
+        <property name="generateDdl" value="true"/>
+    </bean>
+
+    <bean id="writeDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource " destroy-method="close">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/deblog"/>
+        <property name="user" value="root"/>
+        <property name="password" value="root"/>
+        <property name="acquireIncrement" value="1"/>
+        <property name="initialPoolSize" value="5"/>
+        <property name="maxPoolSize" value="20"/>
+        <property name="minPoolSize" value="5"/>
+        <property name="maxStatements" value="100"/>
+        <property name="testConnectionOnCheckout" value="true"/>
+    </bean>
+
+    <bean id="writeEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitManager" ref="persistenceUnitManager" />
         <property name="persistenceUnitName" value="mainPersistenceUnit"/>
+        <property name="jpaVendorAdapter" ref="writeJpaVendor" />
+        <property name="loadTimeWeaver">
+            <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
+        </property>
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+        </property>
     </bean>
 
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    <bean id="writeTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="writeEntityManagerFactory"/>
+        <qualifier value="writeEm" />
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+        </property>
     </bean>
 
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <jpa:repositories base-package="com.github.dba.repo.write"
+                      entity-manager-factory-ref="writeEntityManagerFactory"
+                      transaction-manager-ref="writeTransactionManager" />
+
+    <tx:annotation-driven transaction-manager="writeTransactionManager"/>
+
+    <!--write persistence config-->
+    <bean id="readJpaVendor"
+          class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="showSql" value="true"/>
+        <property name="generateDdl" value="true"/>
+    </bean>
+
+    <bean id="readDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource " destroy-method="close">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/deblog"/>
+        <property name="user" value="root"/>
+        <property name="password" value="root"/>
+        <property name="acquireIncrement" value="1"/>
+        <property name="initialPoolSize" value="5"/>
+        <property name="maxPoolSize" value="20"/>
+        <property name="minPoolSize" value="5"/>
+        <property name="maxStatements" value="100"/>
+        <property name="testConnectionOnCheckout" value="true"/>
+    </bean>
+
+    <bean id="readEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitManager" ref="persistenceUnitManager" />
+        <property name="persistenceUnitName" value="queryPersistenceUnit"/>
+        <property name="jpaVendorAdapter" ref="readJpaVendor" />
+        <property name="loadTimeWeaver">
+            <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
+        </property>
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+        </property>
+    </bean>
+
+    <bean id="readTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="readEntityManagerFactory"/>
+        <qualifier value="readEm" />
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+        </property>
+    </bean>
+
+    <jpa:repositories base-package="com.github.dba.repo.read"
+                      entity-manager-factory-ref="readEntityManagerFactory"
+                      transaction-manager-ref="readTransactionManager" />
+
+    <tx:annotation-driven transaction-manager="readTransactionManager"/>
 </beans>
