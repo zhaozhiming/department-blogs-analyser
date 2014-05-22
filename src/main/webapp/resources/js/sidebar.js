@@ -6,6 +6,15 @@ dba_app.config(['$routeProvider', function ($routeProvider) {
 }]);
 
 function SearchController($scope, $http) {
+    var transform = function(data){
+        return $.param(data);
+    };
+
+    var postConfig = {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        transformRequest: transform
+    };
+
     var rules = {
     };
 
@@ -16,7 +25,7 @@ function SearchController($scope, $http) {
             };
 
             $scope.search = function () {
-                $http.post('api/search').success(function (data) {
+                $http.post('api/search', queryData, postConfig).success(function (data) {
                     $scope.blogs = data;
                 });
             };

@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -104,8 +101,9 @@ public class MainController {
     @RequestMapping(value = "/search", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
     public
     @ResponseBody
-    String search() throws Exception {
+    String search(@RequestParam("depGroup") String depGroup) throws Exception {
         log.debug("search blog start");
+        log.debug(format("group name:%s", depGroup));
         List<Blog> blogs = blogReadRepository.findAll();
         String resultArrayJson = mapper.writeValueAsString(blogs);
         log.debug(format("resultArrayJson: %s", resultArrayJson));
