@@ -2,6 +2,7 @@ package com.github.dba.controller;
 
 import com.github.dba.html.CsdnFetcher;
 import com.github.dba.html.IteyeFetcher;
+import com.github.dba.model.Author;
 import com.github.dba.model.Blog;
 import com.github.dba.model.DepGroup;
 import com.github.dba.model.DepMember;
@@ -13,10 +14,16 @@ import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
 import java.util.List;
 
@@ -101,10 +108,25 @@ public class MainController {
     @RequestMapping(value = "/search", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
     public
     @ResponseBody
-    String search(@RequestParam("depGroup") String depGroup) throws Exception {
+    String search(@RequestParam("depGroup") final String depGroup) throws Exception {
         log.debug("search blog start");
         log.debug(format("group name:%s", depGroup));
-        List<Blog> blogs = blogReadRepository.findAll();
+
+        Specification<Blog> spec = Specifications.where(new Specification<Blog>() {
+            @Override
+            public Predicate toPredicate(Root<Blog> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+
+                if (!"所有分组".equals(depGroup)) {
+                    log.debug(format("in group name:%s", depGroup));
+                    predicate.getExpressions().add(
+                            cb.equal(root.<Author>get("author").<String>get("groupName"), depGroup));
+                }
+
+                return predicate;
+            }
+        });
+        List<Blog> blogs = blogReadRepository.findAll(spec);
         String resultArrayJson = mapper.writeValueAsString(blogs);
         log.debug(format("resultArrayJson: %s", resultArrayJson));
         log.debug("search blog finish");
