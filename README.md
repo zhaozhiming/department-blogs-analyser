@@ -7,6 +7,7 @@
 - [ ] query blog with different conditions
 - [ ] add send mail statistics info
 - [ ] add send mail function with sae
+- [ ] add side bar menu
 - [x] add connections pool manage function
 - [x] use different persistence unit with jpa
 - [x] add augular js to replace jsp
