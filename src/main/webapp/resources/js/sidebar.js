@@ -7,19 +7,14 @@ dba_app.config(['$routeProvider', function ($routeProvider) {
 
 function SearchController($scope, $http) {
     var rules = {
-        searchKeyword: {
-            identifier: 'searchKeyword',
-            rules: [
-                {
-                    type: 'empty',
-                    prompt: '请输入查询关键字'
-                }
-            ]
-        }
     };
 
     var setting = {
         onSuccess: function () {
+            var queryData = {
+                "depGroup": $("#dep_group").val() || ""
+            };
+
             $scope.search = function () {
                 $http.post('api/search').success(function (data) {
                     $scope.blogs = data;
@@ -29,5 +24,11 @@ function SearchController($scope, $http) {
     };
 
     $('#searchForm').form(rules, setting);
+
+    $('.ui.dropdown').dropdown({
+        onChange: function (value) {
+            $("#dep_group").val(value);
+        }
+    });
 
 }

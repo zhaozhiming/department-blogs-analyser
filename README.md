@@ -4,9 +4,9 @@
 
 ### TODO LIST
 - [ ] add statistics page
-- [ ] query blog with different conditions
 - [ ] add send mail statistics info
 - [ ] add send mail function with sae
+- [ ] query blog with different conditions
 - [x] add side bar menu
 - [x] add connections pool manage function
 - [x] use different persistence unit with jpa

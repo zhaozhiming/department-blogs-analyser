@@ -1,12 +1,18 @@
 <div id="searchForm" class="ui form">
     <div class="two fields">
         <div class="field">
-            <div class="ui icon input">
-                <input id="searchKeyword" type="text" name="searchKeyword" placeholder="请输入查询关键字...">
-                <i class="search icon"></i>
+            <input type="hidden" id="dep_group" name="dep_group">
+            <div class="ui selection dropdown">
+                <div class="text">分组</div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item">访问安全组</div>
+                    <div class="item">公共应用组</div>
+                    <div class="item">文件服务组</div>
+                    <div class="item">流程管理组</div>
+                </div>
             </div>
         </div>
-
         <div class="field">
             <div id="searchBtn" class="ui blue submit button" ng-click="search()">查询</div>
         </div>
