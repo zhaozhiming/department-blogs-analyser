@@ -63,8 +63,8 @@ public class IteyeFetcher {
             Elements tags = blog.select("div.blog_title div.news_tag a");
             Author author = authorService.fetchAuthor(tags);
 
-            String time = DbaUtil.parseIteyeTime(
-                    blog.select("div.blog_bottom li.date").get(0).text());
+            long time = parseTimeStringToLong(parseIteyeTime(
+                    blog.select("div.blog_bottom li.date").get(0).text()));
 
             int view = fetchNumber(
                     blog.select("div.blog_bottom li").get(1).text());

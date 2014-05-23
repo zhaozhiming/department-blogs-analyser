@@ -17,7 +17,7 @@ public class Blog {
     @Basic
     private int comment;
     @Basic
-    private String time;
+    private Long time;
     @Embedded
     private Author author;
     @Basic
@@ -29,7 +29,7 @@ public class Blog {
     }
 
     public Blog(String title, String link, int view,
-                int comment, String time, Author author, String blogId, String website) {
+                int comment, Long time, Author author, String blogId, String website) {
         this.title = title;
         this.link = link;
         this.view = view;
@@ -80,11 +80,11 @@ public class Blog {
         this.comment = comment;
     }
 
-    public String getTime() {
+    public Long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Long time) {
         this.time = time;
     }
 
@@ -115,8 +115,7 @@ public class Blog {
     @Override
     public String toString() {
         return String.format("Blog{title='%s', link='%s', view=%d, comment=%d, " +
-                        "time='%s', author=%s, blogId='%s', website='%s'}",
-                title, link, view, comment, time, author, blogId, website
-        );
+                "time=%d, author=%s, blogId='%s', website='%s'}",
+                title, link, view, comment, time, author, blogId, website);
     }
 }

@@ -6,6 +6,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +18,12 @@ public class DbaUtil {
     public static final String DEFAULT_TIME_FORMAT = "yyyy-MM-dd HH:mm";
     public static final String NOW = DateTime.now().toString(DEFAULT_TIME_FORMAT);
     private static final String TOP_TEXT = "[置顶]";
+
+    public static long parseTimeStringToLong(String time) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat(DEFAULT_TIME_FORMAT);
+        Date date = format.parse(time);
+        return date.getTime();
+    }
 
     public static String parseIteyeTime(String source) {
         if (source.contains("不到")) {

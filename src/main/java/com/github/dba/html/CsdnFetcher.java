@@ -66,7 +66,7 @@ public class CsdnFetcher {
 
             String title = fetchTitle(titleLink);
             String blogId = fetchBlogId(link);
-            String time = blog.select("div.article_manage span.link_postdate").get(0).text();
+            long time = parseTimeStringToLong(blog.select("div.article_manage span.link_postdate").get(0).text());
 
             int view = fetchNumber(blog.select(
                     "div.article_manage span.link_view").get(0).text());

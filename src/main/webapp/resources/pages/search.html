@@ -65,7 +65,7 @@
             <td>{{blog.author.groupName}}</td>
             <td>{{blog.view}}</td>
             <td>{{blog.comment}}</td>
-            <td>{{blog.time}}</td>
+            <td>{{blog.time | date: 'yyyy-MM-dd HH:mm'}}</td>
         </tr>
     </tbody>
 </table>
