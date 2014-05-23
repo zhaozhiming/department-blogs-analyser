@@ -110,10 +110,14 @@ public class MainController {
     public
     @ResponseBody
     String search(@RequestParam("depGroup") final String depGroup,
-                  @RequestParam("website") final String website) throws Exception {
+                  @RequestParam("website") final String website,
+                  @RequestParam("startDate") final String startDate,
+                  @RequestParam("endDate") final String endDate) throws Exception {
         log.debug("search blog start");
         log.debug(format("group name:%s", depGroup));
         log.debug(format("website:%s", website));
+        log.debug(format("startDate:%s", startDate));
+        log.debug(format("endDate:%s", endDate));
 
         Specification<Blog> spec = Specifications.where(new Specification<Blog>() {
             @Override

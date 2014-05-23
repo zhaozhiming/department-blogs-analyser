@@ -22,7 +22,9 @@ function SearchController($scope, $http) {
         onSuccess: function () {
             var queryData = {
                 "depGroup": $("#dep_group").val() || "",
-                "website": $("#website").val() || ""
+                "website": $("#website").val() || "",
+                "startDate": $("#start_date").val() || "",
+                "endDate": $("#end_date").val() || ""
             };
 
             $scope.search = function () {
@@ -45,6 +47,14 @@ function SearchController($scope, $http) {
         onChange: function (value) {
             $("#website").val(value);
         }
+    });
+
+    $('#start_date').pickadate({
+        format: 'yyyy-mm-dd'
+    });
+
+    $('#end_date').pickadate({
+        format: 'yyyy-mm-dd'
     });
 
 }

@@ -7,8 +7,8 @@
 - [ ] add send mail statistics info
 - [ ] add send mail function with sae
 - [ ] query blog with different conditions
-- [ ] add data picker
 - [ ] change table blog create time to long
+- [x] add data picker
 - [x] add side bar menu
 - [x] add connections pool manage function
 - [x] use different persistence unit with jpa
