@@ -21,6 +21,7 @@ public class CsdnFetcher {
     private static final Log log = LogFactory.getLog(CsdnFetcher.class);
     private static final double CSDN_PAGE_COUNT = 50d;
     public static final String CSDN_KEY_WORD = "csdn";
+    private static final String CSDN_INDEX = "http://blog.csdn.net";
 
     @Autowired
     private BlogReadRepository blogReadRepository;
@@ -51,21 +52,20 @@ public class CsdnFetcher {
 
     private BatchBlogs fetchPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
-        BatchBlogs result = new BatchBlogs();
-        result.addAllBatchBlogs(fetchBlogs(doc, "article_toplist"));
-        result.addAllBatchBlogs(fetchBlogs(doc, "article_list"));
-        return result;
+        BatchBlogs batchBlogs = new BatchBlogs();
+        batchBlogs.addAllBatchBlogs(fetchBlogs(doc, "article_toplist"));
+        batchBlogs.addAllBatchBlogs(fetchBlogs(doc, "article_list"));
+        return batchBlogs;
     }
 
     private BatchBlogs fetchBlogs(Document doc, String elementId) throws Exception {
         BatchBlogs batchBlogs = new BatchBlogs();
-
         Elements blogs = doc.select(format("#%s div.list_item.list_view", elementId));
         log.debug("blog size:" + blogs.size());
 
         for (Element blogElement : blogs) {
             Element titleLink = blogElement.select("div.article_title span.link_title a").get(0);
-            String link = String.format("http://blog.csdn.net%s", titleLink.attr("href"));
+            String link = String.format("%s%s", CSDN_INDEX, titleLink.attr("href"));
             log.debug(format("blog detail link:%s", link));
 
             String title = fetchTitle(titleLink);
@@ -84,7 +84,6 @@ public class CsdnFetcher {
             Author author = authorService.fetchAuthor(tags);
 
             Blog blog = new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD);
-
             Blog result = blogReadRepository.findByBlogIdAndWebsite(blogId, CSDN_KEY_WORD);
             if (result != null) {
                 blog.setId(result.getId());
