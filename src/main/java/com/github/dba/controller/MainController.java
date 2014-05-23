@@ -74,15 +74,10 @@ public class MainController {
             batchBlogs.addAllBatchBlogs(iteyeFetcher.fetch(url));
         }
 
-        List<Blog> updateBlogs = batchBlogs.getUpdateBlogs();
-        for (Blog updateBlog : updateBlogs) {
-            blogWriteRepository.save(updateBlog);
-        }
+        blogWriteRepository.save(batchBlogs.getUpdateBlogs());
 
         List<Blog> insertBlogs = batchBlogs.getInsertBlogs();
-        for (Blog insertBlog : insertBlogs) {
-            blogWriteRepository.save(insertBlog);
-        }
+        blogWriteRepository.save(insertBlogs);
 
         log.debug("blog fetch finish");
     }

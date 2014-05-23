@@ -3,7 +3,7 @@
 - [ ] add send mail statistics info
 - [ ] add send mail function with sae
 - [ ] add expert blog account to fetch url
-- [ ] use batch db operation
+- [x] use batch db operation
 - [x] use save to update blog
 - [x] make fetch to add blog list only, and operate db in controller
 - [x] add statistics page
