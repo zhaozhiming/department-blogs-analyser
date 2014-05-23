@@ -2,7 +2,9 @@
 
 - [ ] add send mail statistics info
 - [ ] add send mail function with sae
+- [ ] refactor iteye time parse
 - [ ] add expert blog account to fetch url
+- [x] add persistece.xml to git
 - [x] use batch db operation
 - [x] use save to update blog
 - [x] make fetch to add blog list only, and operate db in controller
