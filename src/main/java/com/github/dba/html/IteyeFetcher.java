@@ -1,11 +1,10 @@
 package com.github.dba.html;
 
 import com.github.dba.model.Author;
+import com.github.dba.model.BatchBlogs;
 import com.github.dba.model.Blog;
 import com.github.dba.repo.read.BlogReadRepository;
-import com.github.dba.repo.write.BlogWriteRepository;
 import com.github.dba.service.AuthorService;
-import com.github.dba.util.DbaUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.nodes.Document;
@@ -24,19 +23,18 @@ public class IteyeFetcher {
     private static final String ITEYE_KEY_WORD = "iteye";
 
     @Autowired
-    private BlogWriteRepository blogWriteRepository;
-
-    @Autowired
     private BlogReadRepository blogReadRepository;
 
     @Autowired
     private AuthorService authorService;
 
-    public void fetch(String url) throws Exception {
+    public BatchBlogs fetch(String url) throws Exception {
         int totalPage = getTotalPage(url);
+        BatchBlogs batchBlogs = new BatchBlogs();
         for (int i = 1; i <= totalPage; i++) {
-            fetchPage(format("%s/?page=%d", url, i));
+            batchBlogs.addAllBatchBlogs(fetchBlogs(format("%s/?page=%d", url, i)));
         }
+        return batchBlogs;
     }
 
     private int getTotalPage(String url) throws Exception {
@@ -45,12 +43,10 @@ public class IteyeFetcher {
         return (int) Math.ceil(total / ITEYE_PAGE_COUNT);
     }
 
-    private void fetchPage(String url) throws Exception {
+    private BatchBlogs fetchBlogs(String url) throws Exception {
+        BatchBlogs batchBlogs = new BatchBlogs();
         Document doc = fetchUrlDoc(url);
-        fetchBlogs(doc, url);
-    }
 
-    private void fetchBlogs(Document doc, String url) throws Exception {
         Elements blogs = doc.select("#main div.blog_main");
         log.debug("blog size:" + blogs.size());
 
@@ -73,12 +69,17 @@ public class IteyeFetcher {
 
             Blog result = blogReadRepository.findByBlogIdAndWebsite(blogId, ITEYE_KEY_WORD);
             if (result != null) {
-                blogWriteRepository.updateBlogFor(result.getId(), title, view, comment,
-                        author.getGroupName(), author.getName());
+                result.setTitle(title);
+                result.setView(view);
+                result.setComment(comment);
+                result.setAuthor(author);
+                batchBlogs.addUpdateBlogs(result);
                 continue;
             }
 
-            blogWriteRepository.save(new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD));
+            batchBlogs.addInsertBlogs(new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD));
         }
+
+        return batchBlogs;
     }
 }

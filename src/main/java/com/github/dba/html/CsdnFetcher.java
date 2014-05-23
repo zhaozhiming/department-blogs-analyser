@@ -1,9 +1,9 @@
 package com.github.dba.html;
 
 import com.github.dba.model.Author;
+import com.github.dba.model.BatchBlogs;
 import com.github.dba.model.Blog;
 import com.github.dba.repo.read.BlogReadRepository;
-import com.github.dba.repo.write.BlogWriteRepository;
 import com.github.dba.service.AuthorService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,20 +23,20 @@ public class CsdnFetcher {
     public static final String CSDN_KEY_WORD = "csdn";
 
     @Autowired
-    private BlogWriteRepository blogWriteRepository;
-
-    @Autowired
     private BlogReadRepository blogReadRepository;
 
     @Autowired
     private AuthorService authorService;
 
-    public void fetch(String url) throws Exception {
+    public BatchBlogs fetch(String url) throws Exception {
         int totalPage = getTotalPage(url + "?viewmode=contents");
-        System.out.printf("total page: %s%n", totalPage);
+        log.debug(format("total page: %s%n", totalPage));
+
+        BatchBlogs batchBlogs = new BatchBlogs();
         for (int i = 1; i <= totalPage; i++) {
-            fetchPage(format("%s/article/list/%d?viewmode=contents", url, i));
+            batchBlogs.addAllBatchBlogs(fetchPage(format("%s/article/list/%d?viewmode=contents", url, i)));
         }
+        return batchBlogs;
     }
 
     private int getTotalPage(String url) throws Exception {
@@ -49,13 +49,17 @@ public class CsdnFetcher {
         return (int) Math.ceil(total / CSDN_PAGE_COUNT);
     }
 
-    private void fetchPage(String url) throws Exception {
+    private BatchBlogs fetchPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
-        fetchBlogs(doc, "article_toplist");
-        fetchBlogs(doc, "article_list");
+        BatchBlogs result = new BatchBlogs();
+        result.addAllBatchBlogs(fetchBlogs(doc, "article_toplist"));
+        result.addAllBatchBlogs(fetchBlogs(doc, "article_list"));
+        return result;
     }
 
-    private void fetchBlogs(Document doc, String elementId) throws Exception {
+    private BatchBlogs fetchBlogs(Document doc, String elementId) throws Exception {
+        BatchBlogs batchBlogs = new BatchBlogs();
+
         Elements blogs = doc.select(format("#%s div.list_item.list_view", elementId));
         log.debug("blog size:" + blogs.size());
 
@@ -81,13 +85,17 @@ public class CsdnFetcher {
 
             Blog result = blogReadRepository.findByBlogIdAndWebsite(blogId, CSDN_KEY_WORD);
             if (result != null) {
-                blogWriteRepository.updateBlogFor(result.getId(), title, view, comment,
-                        author.getGroupName(), author.getName());
+                result.setTitle(title);
+                result.setView(view);
+                result.setComment(comment);
+                result.setAuthor(author);
+                batchBlogs.addUpdateBlogs(result);
                 continue;
             }
 
-            blogWriteRepository.save(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
+            batchBlogs.addInsertBlogs(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
         }
+        return batchBlogs;
     }
 
 }

@@ -2,10 +2,12 @@ package com.github.dba.controller;
 
 import com.github.dba.html.CsdnFetcher;
 import com.github.dba.html.IteyeFetcher;
+import com.github.dba.model.BatchBlogs;
 import com.github.dba.model.Blog;
 import com.github.dba.model.DepGroup;
 import com.github.dba.model.DepMember;
 import com.github.dba.repo.read.BlogReadRepository;
+import com.github.dba.repo.write.BlogWriteRepository;
 import com.github.dba.repo.write.DepGroupWriteRepository;
 import com.github.dba.repo.write.DepMemberWriteRepository;
 import org.apache.commons.logging.Log;
@@ -43,6 +45,9 @@ public class MainController {
     @Autowired
     private BlogReadRepository blogReadRepository;
 
+    @Autowired
+    private BlogWriteRepository blogWriteRepository;
+
     @Value("${urls}")
     private String urls;
 
@@ -60,13 +65,27 @@ public class MainController {
         String[] urlArray = urls.split(",");
         log.debug("urls:" + Arrays.toString(urlArray));
 
+        BatchBlogs batchBlogs = new BatchBlogs();
         for (String url : urlArray) {
             if (url.contains(CsdnFetcher.CSDN_KEY_WORD)) {
-                csdnFetcher.fetch(url);
+                batchBlogs.addAllBatchBlogs(csdnFetcher.fetch(url));
                 continue;
             }
-            iteyeFetcher.fetch(url);
+            batchBlogs.addAllBatchBlogs(iteyeFetcher.fetch(url));
         }
+
+        List<Blog> updateBlogs = batchBlogs.getUpdateBlogs();
+        for (Blog updateBlog : updateBlogs) {
+            blogWriteRepository.updateBlogFor(updateBlog.getId(), updateBlog.getTitle(),
+                    updateBlog.getView(), updateBlog.getComment(), updateBlog.getAuthor().getGroupName(),
+                    updateBlog.getAuthor().getName());
+        }
+
+        List<Blog> insertBlogs = batchBlogs.getInsertBlogs();
+        for (Blog insertBlog : insertBlogs) {
+            blogWriteRepository.save(insertBlog);
+        }
+
         log.debug("blog fetch finish");
     }
 
