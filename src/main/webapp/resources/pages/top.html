@@ -1,12 +1,12 @@
 <div class="ui piled feed segment">
     <h2 class="ui header">当月排行榜</h2>
     <div class="event" ng-repeat="group in groups">
-        <div class="ui label">
-            <i class="users icon"></i>
+        <div class="label">
+            <img src="./resources/images/{{$index + 1}}.png">
         </div>
         <div class="content">
             <div class="date">
-                第{{$index + 1}}名
+                文章数量: {{group[1]}}, 阅读次数: {{group[2]}}
             </div>
             <div class="summary">
                 <h3>{{group[0]}}</h3>
