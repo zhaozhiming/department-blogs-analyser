@@ -60,6 +60,6 @@ function SearchController($scope, $http) {
 
 function StatisticsController($scope, $http) {
     $http.get('api/top').success(function (data) {
-        $scope.groups = data;
+        $scope.tops = data;
     });
 }

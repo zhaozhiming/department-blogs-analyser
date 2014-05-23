@@ -1,18 +1,27 @@
 <div class="ui piled feed segment">
     <h2 class="ui header">当月排行榜</h2>
-    <div class="event" ng-repeat="group in groups">
+    <div class="event" ng-repeat="top in tops">
         <div class="label">
             <img src="./resources/images/{{$index + 1}}.png">
         </div>
         <div class="content">
             <div class="date">
-                文章数量: {{group[1]}}, 阅读次数: {{group[2]}}
+                文章数量: {{top.count}}, 阅读次数: {{top.view}}
             </div>
             <div class="summary">
-                <h3>{{group[0]}}</h3>
+                <h3>{{top.groupName}}</h3>
             </div>
             <div class="extra text">
-                文章数量: {{group[1]}}, 阅读次数: {{group[2]}}
+
+                <div class="ui selection list">
+                    <div class="item" ng-repeat="blog in top.blogs">
+                        <div class="content">
+                            <div class="header"><a href="{{blog.link}}" target="_blank">{{blog.title}}</a></div>
+                            阅读次数: {{blog.view}}, 评论数: {{blog.comment}}
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

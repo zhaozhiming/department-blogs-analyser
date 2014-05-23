@@ -2,14 +2,12 @@ package com.github.dba.controller;
 
 import com.github.dba.html.CsdnFetcher;
 import com.github.dba.html.IteyeFetcher;
-import com.github.dba.model.BatchBlogs;
-import com.github.dba.model.Blog;
-import com.github.dba.model.DepGroup;
-import com.github.dba.model.DepMember;
+import com.github.dba.model.*;
 import com.github.dba.repo.read.BlogReadRepository;
 import com.github.dba.repo.write.BlogWriteRepository;
 import com.github.dba.repo.write.DepGroupWriteRepository;
 import com.github.dba.repo.write.DepMemberWriteRepository;
+import com.google.common.collect.Lists;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -139,9 +137,20 @@ public class MainController {
         log.debug("top blogs start");
 
         Long currentMonthFirstDay = DateTime.now().withDayOfMonth(1).withHourOfDay(0).getMillis();
-        List<List> result = blogReadRepository.top(currentMonthFirstDay);
+        List<Object[]> result = blogReadRepository.top(currentMonthFirstDay);
 
-        String resultArrayJson = mapper.writeValueAsString(result);
+        List<Top> tops = Lists.newArrayList();
+        for (Object[] top : result) {
+            log.debug(format("group result :%s", Arrays.toString(top)));
+            String groupName = top[0].toString();
+            long count = (Long) top[1];
+            long view = (Long) top[2];
+
+            List<Blog> blogs = blogReadRepository.topDetail(currentMonthFirstDay, groupName);
+            tops.add(new Top(groupName, count, view, blogs));
+        }
+
+        String resultArrayJson = mapper.writeValueAsString(tops);
         log.debug(format("resultArrayJson: %s", resultArrayJson));
 
         log.debug("top blogs finish");
