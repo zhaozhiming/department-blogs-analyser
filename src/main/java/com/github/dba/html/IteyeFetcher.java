@@ -50,34 +50,32 @@ public class IteyeFetcher {
         Elements blogs = doc.select("#main div.blog_main");
         log.debug("blog size:" + blogs.size());
 
-        for (Element blog : blogs) {
-            Element titleElement = blog.select("div.blog_title h3 a").get(0);
+        for (Element blogElement : blogs) {
+            Element titleElement = blogElement.select("div.blog_title h3 a").get(0);
             String title = fetchTitle(titleElement);
             String link = url.substring(0, url.lastIndexOf("/")) + titleElement.attr("href");
             log.debug(format("blog detail link:%s", link));
             String blogId = fetchBlogId(link);
-            Elements tags = blog.select("div.blog_title div.news_tag a");
+            Elements tags = blogElement.select("div.blog_title div.news_tag a");
             Author author = authorService.fetchAuthor(tags);
 
             long time = parseTimeStringToLong(parseIteyeTime(
-                    blog.select("div.blog_bottom li.date").get(0).text()));
+                    blogElement.select("div.blog_bottom li.date").get(0).text()));
 
             int view = fetchNumber(
-                    blog.select("div.blog_bottom li").get(1).text());
+                    blogElement.select("div.blog_bottom li").get(1).text());
             int comment = fetchNumber(
-                    blog.select("div.blog_bottom li").get(2).text());
+                    blogElement.select("div.blog_bottom li").get(2).text());
+
+            Blog blog = new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD);
 
             Blog result = blogReadRepository.findByBlogIdAndWebsite(blogId, ITEYE_KEY_WORD);
             if (result != null) {
-                result.setTitle(title);
-                result.setView(view);
-                result.setComment(comment);
-                result.setAuthor(author);
-                batchBlogs.addUpdateBlogs(result);
+                blog.setId(result.getId());
+                batchBlogs.addUpdateBlogs(blog);
                 continue;
             }
-
-            batchBlogs.addInsertBlogs(new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD));
+            batchBlogs.addInsertBlogs(blog);
         }
 
         return batchBlogs;

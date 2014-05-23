@@ -63,19 +63,19 @@ public class CsdnFetcher {
         Elements blogs = doc.select(format("#%s div.list_item.list_view", elementId));
         log.debug("blog size:" + blogs.size());
 
-        for (Element blog : blogs) {
-            Element titleLink = blog.select("div.article_title span.link_title a").get(0);
+        for (Element blogElement : blogs) {
+            Element titleLink = blogElement.select("div.article_title span.link_title a").get(0);
             String link = String.format("http://blog.csdn.net%s", titleLink.attr("href"));
             log.debug(format("blog detail link:%s", link));
 
             String title = fetchTitle(titleLink);
             String blogId = fetchBlogId(link);
-            long time = parseTimeStringToLong(blog.select("div.article_manage span.link_postdate").get(0).text());
+            long time = parseTimeStringToLong(blogElement.select("div.article_manage span.link_postdate").get(0).text());
 
-            int view = fetchNumber(blog.select(
+            int view = fetchNumber(blogElement.select(
                     "div.article_manage span.link_view").get(0).text());
 
-            int comment = fetchNumber(blog.select(
+            int comment = fetchNumber(blogElement.select(
                     "div.article_manage span.link_comments").get(0).text());
 
             Document detailDoc = fetchUrlDoc(link);
@@ -83,17 +83,16 @@ public class CsdnFetcher {
             Elements tags = detailDoc.select("#article_details div.tag2box a");
             Author author = authorService.fetchAuthor(tags);
 
+            Blog blog = new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD);
+
             Blog result = blogReadRepository.findByBlogIdAndWebsite(blogId, CSDN_KEY_WORD);
             if (result != null) {
-                result.setTitle(title);
-                result.setView(view);
-                result.setComment(comment);
-                result.setAuthor(author);
-                batchBlogs.addUpdateBlogs(result);
+                blog.setId(result.getId());
+                batchBlogs.addUpdateBlogs(blog);
                 continue;
             }
 
-            batchBlogs.addInsertBlogs(new Blog(title, link, view, comment, time, author, blogId, CSDN_KEY_WORD));
+            batchBlogs.addInsertBlogs(blog);
         }
         return batchBlogs;
     }

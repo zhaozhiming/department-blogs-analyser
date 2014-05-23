@@ -76,9 +76,7 @@ public class MainController {
 
         List<Blog> updateBlogs = batchBlogs.getUpdateBlogs();
         for (Blog updateBlog : updateBlogs) {
-            blogWriteRepository.updateBlogFor(updateBlog.getId(), updateBlog.getTitle(),
-                    updateBlog.getView(), updateBlog.getComment(), updateBlog.getAuthor().getGroupName(),
-                    updateBlog.getAuthor().getName());
+            blogWriteRepository.save(updateBlog);
         }
 
         List<Blog> insertBlogs = batchBlogs.getInsertBlogs();
