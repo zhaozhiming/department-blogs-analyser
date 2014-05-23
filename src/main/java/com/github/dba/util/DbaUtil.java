@@ -20,7 +20,11 @@ public class DbaUtil {
     private static final String TOP_TEXT = "[置顶]";
 
     public static long parseTimeStringToLong(String time) throws ParseException {
-        SimpleDateFormat format = new SimpleDateFormat(DEFAULT_TIME_FORMAT);
+        return parseTimeStringToLong(time, DEFAULT_TIME_FORMAT);
+    }
+
+    public static long parseTimeStringToLong(String time, String dateFormat) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat(dateFormat);
         Date date = format.parse(time);
         return date.getTime();
     }
