@@ -5,6 +5,7 @@
 ### TODO LIST
 - [ ] add send mail statistics info
 - [ ] add send mail function with sae
+- [ ] make fetch to add blog list only, and operate db in controller
 - [x] add statistics page
 - [x] query blog with different conditions
 - [x] change table blog create time to long
