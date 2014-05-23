@@ -3,9 +3,9 @@
 ### [Requires][url1]
 
 ### TODO LIST
-- [ ] add statistics page
 - [ ] add send mail statistics info
 - [ ] add send mail function with sae
+- [x] add statistics page
 - [x] query blog with different conditions
 - [x] change table blog create time to long
 - [x] add data picker

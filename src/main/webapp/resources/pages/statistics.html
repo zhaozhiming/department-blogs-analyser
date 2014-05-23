@@ -1,52 +1,21 @@
-<h4>Feed</h4>
+<h4>最近30天</h4>
 <div class="ui piled feed segment">
-    <h2 class="ui header">
-        Recent Activity
-    </h2>
-    <div class="event">
-        <div class="label">
-            <img src="/images/demo/avatar2.jpg">
+    <h2 class="ui header">排行榜</h2>
+    <div class="event" ng-repeat="group in groups">
+        <div class="ui label">
+            <i class="users icon"></i>
         </div>
         <div class="content">
             <div class="date">
-                Just moments ago
+                第{{$index + 1}}名
             </div>
             <div class="summary">
-                <a>Sally Poodle</a> added you as a friend
-            </div>
-        </div>
-    </div>
-    <div class="event">
-        <div class="label">
-            <i class="circular pencil icon"></i>
-        </div>
-        <div class="content">
-            <div class="date">
-                3 days ago
-            </div>
-            <div class="summary">
-                You submitted a new post to the page
+                <h3>{{group[0]}}</h3>
             </div>
             <div class="extra text">
-                I am a dog and I do not know how to make a post
+                文章数量: {{group[1]}}, 阅读次数: {{group[2]}}
             </div>
         </div>
     </div>
-    <div class="event">
-        <div class="label">
-            <i class="circular photo icon"></i>
-        </div>
-        <div class="content">
-            <div class="date">
-                3 days ago
-            </div>
-            <div class="summary">
-                <a>Sally Poodle</a> added <a>2 new photos</a> of you
-            </div>
-            <div class="extra images">
-                <img src="/images/demo/item1.jpg">
-                <img src="/images/demo/item2.jpg">
-            </div>
-        </div>
-    </div>
+
 </div>

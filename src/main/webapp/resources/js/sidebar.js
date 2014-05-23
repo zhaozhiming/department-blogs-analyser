@@ -1,7 +1,7 @@
 dba_app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
         .when('/search', { templateUrl: 'resources/pages/search.html', controller: SearchController})
-        .when('/statistics', { templateUrl: 'resources/pages/statistics.html'})
+        .when('/statistics', { templateUrl: 'resources/pages/statistics.html', controller: StatisticsController})
         .otherwise({redirectTo: '/home'});
 }]);
 
@@ -56,5 +56,10 @@ function SearchController($scope, $http) {
     $('#end_date').pickadate({
         format: 'yyyy-mm-dd'
     });
+}
 
+function StatisticsController($scope, $http) {
+    $http.get('api/statistics').success(function (data) {
+        $scope.groups = data;
+    });
 }

@@ -11,6 +11,7 @@ import com.github.dba.repo.write.DepMemberWriteRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -116,6 +117,22 @@ public class MainController {
         String resultArrayJson = mapper.writeValueAsString(blogs);
         log.debug(format("resultArrayJson: %s", resultArrayJson));
         log.debug("search blog finish");
+        return resultArrayJson;
+    }
+
+    @RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public
+    @ResponseBody
+    String statistics() throws Exception {
+        log.debug("statistics blogs start");
+
+        Long threeMonthAgo = DateTime.now().minusMonths(3).getMillis();
+        List groups = blogReadRepository.statistics(0L);
+
+        String resultArrayJson = mapper.writeValueAsString(groups);
+        log.debug(format("resultArrayJson: %s", resultArrayJson));
+
+        log.debug("statistics blogs finish");
         return resultArrayJson;
     }
 }
