@@ -6,7 +6,7 @@
 - [ ] add statistics page
 - [ ] add send mail statistics info
 - [ ] add send mail function with sae
-- [ ] query blog with different conditions
+- [x] query blog with different conditions
 - [x] change table blog create time to long
 - [x] add data picker
 - [x] add side bar menu
