@@ -132,19 +132,19 @@ public class MainController {
         return resultArrayJson;
     }
 
-    @RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "/top", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public
     @ResponseBody
-    String statistics() throws Exception {
-        log.debug("statistics blogs start");
+    String top() throws Exception {
+        log.debug("top blogs start");
 
-        Long threeMonthAgo = DateTime.now().minusMonths(3).getMillis();
-        List groups = blogReadRepository.statistics(threeMonthAgo);
+        Long currentMonthFirstDay = DateTime.now().withDayOfMonth(1).withHourOfDay(0).getMillis();
+        List<List> result = blogReadRepository.top(currentMonthFirstDay);
 
-        String resultArrayJson = mapper.writeValueAsString(groups);
+        String resultArrayJson = mapper.writeValueAsString(result);
         log.debug(format("resultArrayJson: %s", resultArrayJson));
 
-        log.debug("statistics blogs finish");
+        log.debug("top blogs finish");
         return resultArrayJson;
     }
 }

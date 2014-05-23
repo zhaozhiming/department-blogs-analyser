@@ -4,8 +4,8 @@
 - [ ] add send mail function with sae
 - [ ] refactor iteye time parse
 - [ ] add expert blog account to fetch url
-- [ ] change statistics page
-- [ ] add top page
+- [ ] add statistics page
+- [ ] change statistics page to top page
 - [x] add persistece.xml to git
 - [x] use batch db operation
 - [x] use save to update blog

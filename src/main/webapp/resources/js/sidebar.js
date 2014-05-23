@@ -1,7 +1,7 @@
 dba_app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
         .when('/search', { templateUrl: 'resources/pages/search.html', controller: SearchController})
-        .when('/statistics', { templateUrl: 'resources/pages/statistics.html', controller: StatisticsController})
+        .when('/top', { templateUrl: 'resources/pages/top.html', controller: StatisticsController})
         .otherwise({redirectTo: '/home'});
 }]);
 
@@ -59,7 +59,7 @@ function SearchController($scope, $http) {
 }
 
 function StatisticsController($scope, $http) {
-    $http.get('api/statistics').success(function (data) {
+    $http.get('api/top').success(function (data) {
         $scope.groups = data;
     });
 }
