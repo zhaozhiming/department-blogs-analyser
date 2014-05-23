@@ -5,6 +5,8 @@
 ### TODO LIST
 - [ ] add send mail statistics info
 - [ ] add send mail function with sae
+- [ ] use save to update blog
+- [ ] use batch db operation
 - [x] make fetch to add blog list only, and operate db in controller
 - [x] add statistics page
 - [x] query blog with different conditions

@@ -146,7 +146,7 @@ public class MainController {
         log.debug("statistics blogs start");
 
         Long threeMonthAgo = DateTime.now().minusMonths(3).getMillis();
-        List groups = blogReadRepository.statistics(0L);
+        List groups = blogReadRepository.statistics(threeMonthAgo);
 
         String resultArrayJson = mapper.writeValueAsString(groups);
         log.debug(format("resultArrayJson: %s", resultArrayJson));
