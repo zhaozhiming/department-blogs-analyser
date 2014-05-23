@@ -2,31 +2,21 @@ package com.github.dba.controller;
 
 import com.github.dba.html.CsdnFetcher;
 import com.github.dba.html.IteyeFetcher;
-import com.github.dba.model.Author;
 import com.github.dba.model.Blog;
 import com.github.dba.model.DepGroup;
 import com.github.dba.model.DepMember;
 import com.github.dba.repo.read.BlogReadRepository;
 import com.github.dba.repo.write.DepGroupWriteRepository;
 import com.github.dba.repo.write.DepMemberWriteRepository;
-import com.github.dba.util.DbaUtil;
-import com.google.common.base.Strings;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +25,6 @@ import static java.lang.String.format;
 @Controller
 public class MainController {
     private static final Log log = LogFactory.getLog(MainController.class);
-    public static final String PAGE_DATE_FORMAT = "yyyy-MM-dd";
 
     @Autowired
     private CsdnFetcher csdnFetcher;
@@ -112,54 +101,16 @@ public class MainController {
     @RequestMapping(value = "/search", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
     public
     @ResponseBody
-    String search(@RequestParam("depGroup") final String depGroup,
-                  @RequestParam("website") final String website,
-                  @RequestParam("startDate") final String startDate,
-                  @RequestParam("endDate") final String endDate) throws Exception {
+    String search(@RequestParam("depGroup") String depGroup,
+                  @RequestParam("website") String website,
+                  @RequestParam("startDate") String startDate,
+                  @RequestParam("endDate") String endDate) throws Exception {
         log.debug("search blog start");
-        log.debug(format("group name:%s", depGroup));
-        log.debug(format("website:%s", website));
-        log.debug(format("startDate:%s", startDate));
-        log.debug(format("endDate:%s", endDate));
+        log.debug(format("group name:%s, website:%s, start date:%s, end date:%s",
+                depGroup, website, startDate, endDate));
 
-        Specification<Blog> spec = Specifications.where(new Specification<Blog>() {
-            @Override
-            public Predicate toPredicate(Root<Blog> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                Predicate predicate = cb.conjunction();
-
-                if (!Strings.isNullOrEmpty(depGroup) && !"所有分组".equals(depGroup)) {
-                    predicate.getExpressions().add(
-                            cb.equal(root.<Author>get("author").<String>get("groupName"), depGroup));
-                }
-
-                if (!Strings.isNullOrEmpty(website) && !"所有".equals(website)) {
-                    predicate.getExpressions().add(
-                            cb.equal(root.<String>get("website"), website));
-                }
-
-                if (!Strings.isNullOrEmpty(startDate)) {
-                    try {
-                        long time = DbaUtil.parseTimeStringToLong(startDate, PAGE_DATE_FORMAT);
-                        predicate.getExpressions().add(cb.ge(root.<Long>get("time"), time));
-                    } catch (ParseException e) {
-                        throw new RuntimeException(format("%s parse to date error:", startDate));
-                    }
-                }
-
-                if (!Strings.isNullOrEmpty(endDate)) {
-                    try {
-                        long time = DbaUtil.parseTimeStringToLong(endDate, PAGE_DATE_FORMAT);
-                        predicate.getExpressions().add(cb.le(root.<Long>get("time"), time));
-                    } catch (ParseException e) {
-                        throw new RuntimeException(format("%s parse to date error:", endDate));
-                    }
-                }
-
-                return predicate;
-            }
-        });
-
-        List<Blog> blogs = blogReadRepository.findAll(spec);
+        List<Blog> blogs = blogReadRepository.findAll(
+                Blog.querySpecification(depGroup, website, startDate, endDate));
         String resultArrayJson = mapper.writeValueAsString(blogs);
         log.debug(format("resultArrayJson: %s", resultArrayJson));
         log.debug("search blog finish");

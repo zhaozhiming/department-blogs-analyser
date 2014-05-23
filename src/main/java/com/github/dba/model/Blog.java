@@ -1,10 +1,24 @@
 package com.github.dba.model;
 
+import com.github.dba.util.DbaUtil;
+import com.google.common.base.Strings;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.domain.Specifications;
+
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.text.ParseException;
+
+import static java.lang.String.format;
 
 @Entity(name = "blogs")
 @Table(name = "blogs", uniqueConstraints = @UniqueConstraint(columnNames = {"blogId", "website"}))
 public class Blog {
+    private static final String PAGE_DATE_FORMAT = "yyyy-MM-dd";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -117,5 +131,45 @@ public class Blog {
         return String.format("Blog{title='%s', link='%s', view=%d, comment=%d, " +
                 "time=%d, author=%s, blogId='%s', website='%s'}",
                 title, link, view, comment, time, author, blogId, website);
+    }
+
+    public static Specification<Blog> querySpecification(final String depGroup, final String website,
+                                                         final String startDate, final String endDate) {
+        return Specifications.where(new Specification<Blog>() {
+            @Override
+            public Predicate toPredicate(Root<Blog> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+
+                if (!Strings.isNullOrEmpty(depGroup) && !"所有分组".equals(depGroup)) {
+                    predicate.getExpressions().add(
+                            cb.equal(root.<Author>get("author").<String>get("groupName"), depGroup));
+                }
+
+                if (!Strings.isNullOrEmpty(website) && !"所有".equals(website)) {
+                    predicate.getExpressions().add(
+                            cb.equal(root.<String>get("website"), website));
+                }
+
+                if (!Strings.isNullOrEmpty(startDate)) {
+                    try {
+                        long time = DbaUtil.parseTimeStringToLong(startDate, PAGE_DATE_FORMAT);
+                        predicate.getExpressions().add(cb.ge(root.<Long>get("time"), time));
+                    } catch (ParseException e) {
+                        throw new RuntimeException(format("%s parse to date error:", startDate));
+                    }
+                }
+
+                if (!Strings.isNullOrEmpty(endDate)) {
+                    try {
+                        long time = DbaUtil.parseTimeStringToLong(endDate, PAGE_DATE_FORMAT);
+                        predicate.getExpressions().add(cb.le(root.<Long>get("time"), time));
+                    } catch (ParseException e) {
+                        throw new RuntimeException(format("%s parse to date error:", endDate));
+                    }
+                }
+
+                return predicate;
+            }
+        });
     }
 }
