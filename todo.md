@@ -2,8 +2,8 @@
 
 - [ ] add send mail statistics info
 - [ ] add send mail function with sae
-- [ ] refactor iteye time parse
 - [ ] add expert blog account to fetch url
+- [x] refactor iteye time parse
 - [x] sort top select by sql
 - [x] query page add result size
 - [x] query page add reset button

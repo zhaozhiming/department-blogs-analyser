@@ -29,9 +29,9 @@ public class DbaUtil {
         return date.getTime();
     }
 
-    public static String parseIteyeTime(String source) {
+    public static long parseIteyeTime(String source) throws ParseException {
         if (source.contains("不到")) {
-            return NOW;
+            return DateTime.now().getMillis();
         }
 
         if (source.contains("分钟前")) {
@@ -43,14 +43,14 @@ public class DbaUtil {
         }
 
         if ("昨天".equals(source)) {
-            return new DateTime().minusDays(1).toString(DEFAULT_TIME_FORMAT);
+            return new DateTime().minusDays(1).getMillis();
         }
 
         if ("前天".equals(source)) {
-            return new DateTime().minusDays(2).toString(DEFAULT_TIME_FORMAT);
+            return new DateTime().minusDays(2).getMillis();
         }
 
-        return source;
+        return parseTimeStringToLong(source);
     }
 
     public static String fetchNumber(String source, Pattern compile, String error) {
@@ -88,22 +88,22 @@ public class DbaUtil {
     enum Time {
         HOUR {
             @Override
-            protected String minusTime(int num) {
-                return new DateTime().minusHours(num).toString(DEFAULT_TIME_FORMAT);
+            protected Long minusTime(int num) {
+                return new DateTime().minusHours(num).getMillis();
             }
         }, MINUTE {
             @Override
-            protected String minusTime(int num) {
-                return new DateTime().minusMinutes(num).toString(DEFAULT_TIME_FORMAT);
+            protected Long minusTime(int num) {
+                return new DateTime().minusMinutes(num).getMillis();
             }
         };
 
-        public String parseTime(String source) {
+        public Long parseTime(String source) {
             String num = fetchNumber(source, Pattern.compile("\\d+"),
                     "parse iteye time error, not found any number");
             return minusTime(Integer.valueOf(num));
         }
-        protected abstract String minusTime(int num);
+        protected abstract Long minusTime(int num);
     }
 
 }

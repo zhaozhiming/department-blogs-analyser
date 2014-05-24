@@ -56,17 +56,16 @@ public class IteyeFetcher {
             String link = url.substring(0, url.lastIndexOf("/")) + titleElement.attr("href");
             log.debug(format("blog detail link:%s", link));
             String blogId = fetchBlogId(link);
-            Elements tags = blogElement.select("div.blog_title div.news_tag a");
-            Author author = authorService.fetchAuthor(tags);
 
-            long time = parseTimeStringToLong(parseIteyeTime(
-                    blogElement.select("div.blog_bottom li.date").get(0).text()));
-
+            long time = parseIteyeTime(
+                    blogElement.select("div.blog_bottom li.date").get(0).text());
             int view = fetchNumber(
                     blogElement.select("div.blog_bottom li").get(1).text());
             int comment = fetchNumber(
                     blogElement.select("div.blog_bottom li").get(2).text());
 
+            Elements tags = blogElement.select("div.blog_title div.news_tag a");
+            Author author = authorService.fetchAuthor(tags);
             Blog blog = new Blog(title, link, view, comment, time, author, blogId, ITEYE_KEY_WORD);
 
             Blog result = blogReadRepository.findByBlogIdAndWebsite(blogId, ITEYE_KEY_WORD);
