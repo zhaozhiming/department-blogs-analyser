@@ -5,6 +5,8 @@
 - [ ] refactor iteye time parse
 - [ ] add expert blog account to fetch url
 - [ ] add statistics page
+- [ ] sort top select by sql
+- [ ] query page add result size
 - [ ] query page add reset button
 - [x] change statistics page to top page
 - [x] add persistece.xml to git

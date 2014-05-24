@@ -1,10 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+<div class="ui connected items">
+    <div class="row">
+        <div class="item" ng-repeat="month in months">
+            <div class="content">
+                <div class="name">{{month.month | date: 'yyyy-MM'}}</div>
+                <p class="description">
+                    <div class="ui list">
+                        <div class="item" ng-repeat="group in month.groups">
+                            <div class="header">第{{$index + 1}}名 {{group.groupName}}组</div>
+                            文章数量 {{group.count}}, 阅读次数 {{group.view}}
+                        </div>
+                    </div>
 
-</body>
-</html>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

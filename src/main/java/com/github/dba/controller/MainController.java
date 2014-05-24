@@ -150,6 +150,41 @@ public class MainController {
         return resultArrayJson;
     }
 
+    @RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public
+    @ResponseBody
+    String statistics() throws Exception {
+        log.debug("statistics blogs start");
+
+        List<MonthStatistics> months = Lists.newArrayList();
+
+        months.add(getMonthStatisticsDetails(
+                //get current month first day and set time to 0:xx
+                DateTime.now().withDayOfMonth(1).withHourOfDay(0).getMillis(),
+                DateTime.now().getMillis()));
+
+        String resultArrayJson = mapper.writeValueAsString(months);
+        log.debug(format("resultArrayJson: %s", resultArrayJson));
+
+        log.debug("statistics blogs finish");
+        return resultArrayJson;
+    }
+
+    private MonthStatistics getMonthStatisticsDetails(long currentMonthStart, long currentMonthEnd) {
+        List<Object[]> result = blogReadRepository.statistics(currentMonthStart, currentMonthEnd);
+
+        List<StatisticsDetail> statisticsDetails = Lists.newArrayList();
+        for (Object[] statistics : result) {
+            log.debug(format("statistics result :%s", Arrays.toString(statistics)));
+            String groupName = statistics[0].toString();
+            long count = (Long) statistics[1];
+            long view = (Long) statistics[2];
+
+            statisticsDetails.add(new StatisticsDetail(groupName, count, view));
+        }
+        return new MonthStatistics(currentMonthStart, statisticsDetails);
+    }
+
     private List<Top> encapsulateResult(Long currentMonthFirstDay, List<Object[]> result) {
         List<Top> tops = Lists.newArrayList();
         for (Object[] top : result) {

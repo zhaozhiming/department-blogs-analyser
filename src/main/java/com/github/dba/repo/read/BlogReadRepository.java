@@ -19,4 +19,8 @@ public interface BlogReadRepository extends JpaRepository<Blog, Long>, JpaSpecif
 
     @Query(value = "select b from blogs b where b.time >= :time and b.author.groupName = :groupName")
     List<Blog> topDetail(@Param("time") Long time, @Param("groupName") String groupName);
+
+    @Query(value = "SELECT b.author.groupName, count(b), sum(b.view) FROM blogs b WHERE b.time >= :startTime and b.time < :endTime group by b.author.groupName order by count(b) desc ")
+    List<Object[]> statistics(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
+
 }
