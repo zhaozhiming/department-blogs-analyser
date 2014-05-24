@@ -12,12 +12,14 @@
                 <h3>{{top.groupName}}</h3>
             </div>
             <div class="extra text">
-
-                <div class="ui selection list">
+                <div class="ui basic button" ng-click="show_blogs(top)">
+                    博客列表<i class="dropdown icon"></i>
+                </div>
+                <div class="ui divided list" ng-show="top.show">
                     <div class="item" ng-repeat="blog in top.blogs">
                         <div class="content">
-                            <div class="header"><a href="{{blog.link}}" target="_blank">{{blog.title}}</a></div>
-                            阅读次数: {{blog.view}}, 评论数: {{blog.comment}}
+                            <a class="header" href="{{blog.link}}" target="_blank">{{blog.title}}</a>
+                            <div class="description">{{blog.website}}--阅读次数: {{blog.view}}, 评论数: {{blog.comment}}</div>
                         </div>
                     </div>
                 </div>

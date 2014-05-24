@@ -5,7 +5,8 @@
 - [ ] refactor iteye time parse
 - [ ] add expert blog account to fetch url
 - [ ] add statistics page
-- [ ] change statistics page to top page
+- [ ] query page add reset button
+- [x] change statistics page to top page
 - [x] add persistece.xml to git
 - [x] use batch db operation
 - [x] use save to update blog
