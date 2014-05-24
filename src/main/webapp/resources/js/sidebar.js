@@ -6,7 +6,7 @@ dba_app.config(['$routeProvider', function ($routeProvider) {
         .otherwise({redirectTo: '/home'});
 }]);
 
-function SearchController($scope, $http) {
+function SearchController($scope, $http, $route) {
     var transform = function(data){
         return $.param(data);
     };
@@ -37,6 +37,10 @@ function SearchController($scope, $http) {
     };
 
     $('#searchForm').form(rules, setting);
+
+    $('#reset_button').click(function() {
+        $route.reload();
+    });
 
     $('#group_selection').dropdown({
         onChange: function (value) {

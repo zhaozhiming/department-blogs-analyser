@@ -6,7 +6,7 @@
 - [ ] add expert blog account to fetch url
 - [ ] sort top select by sql
 - [ ] query page add result size
-- [ ] query page add reset button
+- [x] query page add reset button
 - [x] add statistics page
 - [x] move top pic to top folder
 - [x] change statistics page to top page

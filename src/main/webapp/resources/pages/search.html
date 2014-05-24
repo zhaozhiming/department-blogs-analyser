@@ -35,15 +35,14 @@
             <input id="end_date" name="end_date" placeholder="结束时间" type="text">
         </div>
     </div>
-    <div id="searchBtn" class="ui blue submit button" ng-click="search()">查询</div>
-    <div class="ui error message"></div>
+    <div class="ui buttons">
+        <div class="ui blue submit button" ng-click="search()">查询</div>
+        <div class="or"></div>
+        <div id="reset_button" class="ui button">重置</div>
+    </div>
 </div>
 
 <div class="ui divider"></div>
-
-<div class="ui dimmer">
-    <div class="ui large text loader">查询中...</div>
-</div>
 
 <table class="ui table segment">
     <thead>
