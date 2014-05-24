@@ -7,6 +7,7 @@ import com.github.dba.repo.read.BlogReadRepository;
 import com.github.dba.repo.write.BlogWriteRepository;
 import com.github.dba.repo.write.DepGroupWriteRepository;
 import com.github.dba.repo.write.DepMemberWriteRepository;
+import com.github.dba.service.MailService;
 import com.google.common.collect.Lists;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,6 +49,9 @@ public class MainController {
     @Autowired
     private BlogWriteRepository blogWriteRepository;
 
+    @Autowired
+    private MailService mailService;
+
     @Value("${urls}")
     private String urls;
 
@@ -56,6 +61,12 @@ public class MainController {
     @Value("${members}")
     private String members;
     private final ObjectMapper mapper = new ObjectMapper();
+
+    @RequestMapping(value = "/mail", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void mail() {
+        mailService.sendNewBlogs(new ArrayList<Blog>());
+    }
 
     @RequestMapping(value = "/blog/fetch", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
