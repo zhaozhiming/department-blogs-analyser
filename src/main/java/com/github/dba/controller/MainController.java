@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.github.dba.util.DbaUtil.currentMonthFirstDay;
 import static java.lang.String.format;
 
 @Controller
@@ -136,7 +137,7 @@ public class MainController {
     String top() throws Exception {
         log.debug("top blogs start");
 
-        Long currentMonthFirstDay = DateTime.now().withDayOfMonth(1).withHourOfDay(0).getMillis();
+        Long currentMonthFirstDay = currentMonthFirstDay();
         List<Object[]> result = blogReadRepository.top(currentMonthFirstDay);
 
         List<Top> tops = encapsulateResult(currentMonthFirstDay, result);
@@ -163,7 +164,7 @@ public class MainController {
 
     private List<MonthStatistics> lastThreeMonthsStatistics() {
         List<MonthStatistics> months = Lists.newArrayList();
-        long currentMonthFirstDay = DateTime.now().withDayOfMonth(1).withHourOfDay(0).getMillis();
+        long currentMonthFirstDay = currentMonthFirstDay();
 
         months.add(getMonthStatisticsDetails(
                 currentMonthFirstDay, DateTime.now().getMillis()));
@@ -175,8 +176,7 @@ public class MainController {
         long beforeLastMonthFirstDay =
                 DateTime.now().minusMonths(2).withDayOfMonth(1).withHourOfDay(0).getMillis();
         months.add(getMonthStatisticsDetails(
-                beforeLastMonthFirstDay,
-                lastMonthFirstDay));
+                beforeLastMonthFirstDay, lastMonthFirstDay));
         return months;
     }
 

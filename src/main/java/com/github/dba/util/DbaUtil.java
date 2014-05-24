@@ -16,7 +16,6 @@ import static java.lang.Integer.valueOf;
 
 public class DbaUtil {
     public static final String DEFAULT_TIME_FORMAT = "yyyy-MM-dd HH:mm";
-    public static final String NOW = DateTime.now().toString(DEFAULT_TIME_FORMAT);
     private static final String TOP_TEXT = "[置顶]";
 
     public static long parseTimeStringToLong(String time) throws ParseException {
@@ -81,6 +80,10 @@ public class DbaUtil {
         return valueOf(regex(source, Pattern.compile("\\d+")));
     }
 
+    public static Long currentMonthFirstDay() {
+        return DateTime.now().withDayOfMonth(1).withHourOfDay(0).getMillis();
+    }
+
     private static String regex(String source, Pattern compile) {
         return DbaUtil.fetchNumber(source, compile, "can't find number with regex");
     }
@@ -103,6 +106,7 @@ public class DbaUtil {
                     "parse iteye time error, not found any number");
             return minusTime(Integer.valueOf(num));
         }
+
         protected abstract Long minusTime(int num);
     }
 
