@@ -25,7 +25,7 @@ public class AuthorService {
         String tag = tags.get(tags.size() - 1).text();
         if (Strings.isNullOrEmpty(tag)) return Author.defaultAuthor();
 
-        String[] texts = tag.split("-");
+        String[] texts = tag.toUpperCase().split("-");
         if (texts.length != 2) return Author.defaultAuthor();
 
         DepGroup group = depGroupReadRepository.findByGroupShort(texts[0]);
