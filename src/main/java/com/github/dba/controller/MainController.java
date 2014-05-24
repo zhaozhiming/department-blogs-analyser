@@ -180,8 +180,8 @@ public class MainController {
         return months;
     }
 
-    private MonthStatistics getMonthStatisticsDetails(long currentMonthStart, long currentMonthEnd) {
-        List<Object[]> result = blogReadRepository.statistics(currentMonthStart, currentMonthEnd);
+    private MonthStatistics getMonthStatisticsDetails(long monthStartDay, long monthEndDay) {
+        List<Object[]> result = blogReadRepository.statistics(monthStartDay, monthEndDay);
 
         List<StatisticsDetail> statisticsDetails = Lists.newArrayList();
         for (Object[] statistics : result) {
@@ -192,7 +192,7 @@ public class MainController {
 
             statisticsDetails.add(new StatisticsDetail(groupName, count, view));
         }
-        return new MonthStatistics(currentMonthStart, statisticsDetails);
+        return new MonthStatistics(monthStartDay, statisticsDetails);
     }
 
     private List<Top> encapsulateResult(Long currentMonthFirstDay, List<Object[]> result) {
