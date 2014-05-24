@@ -5,7 +5,7 @@
 - [ ] refactor iteye time parse
 - [ ] add expert blog account to fetch url
 - [ ] sort top select by sql
-- [ ] query page add result size
+- [x] query page add result size
 - [x] query page add reset button
 - [x] add statistics page
 - [x] move top pic to top folder

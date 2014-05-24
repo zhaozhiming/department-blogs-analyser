@@ -67,4 +67,9 @@
             <td>{{blog.time | date: 'yyyy-MM-dd HH:mm'}}</td>
         </tr>
     </tbody>
+    <tfoot>
+        <tr>
+            <th>查询结果数: {{blogs.length || 0}}</th>
+        </tr>
+    </tfoot>
 </table>
