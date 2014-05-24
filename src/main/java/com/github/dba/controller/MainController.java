@@ -20,8 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -142,7 +140,6 @@ public class MainController {
         List<Object[]> result = blogReadRepository.top(currentMonthFirstDay);
 
         List<Top> tops = encapsulateResult(currentMonthFirstDay, result);
-        sortTops(tops);
         String resultArrayJson = mapper.writeValueAsString(tops);
         log.debug(format("resultArrayJson: %s", resultArrayJson));
 
@@ -210,14 +207,5 @@ public class MainController {
             tops.add(new Top(groupName, count, view, blogs));
         }
         return tops;
-    }
-
-    private void sortTops(List<Top> tops) {
-        Collections.sort(tops, new Comparator<Top>() {
-            @Override
-            public int compare(Top o1, Top o2) {
-                return (int) (o2.getCount() - o1.getCount());
-            }
-        });
     }
 }
