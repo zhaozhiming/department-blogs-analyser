@@ -8,6 +8,7 @@
 - [ ] sort top select by sql
 - [ ] query page add result size
 - [ ] query page add reset button
+- [ ] move top pic to top folder
 - [x] change statistics page to top page
 - [x] add persistece.xml to git
 - [x] use batch db operation

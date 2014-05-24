@@ -1,6 +1,10 @@
+<h3>最近3月统计结果</h3>
 <div class="ui connected items">
     <div class="row">
         <div class="item" ng-repeat="month in months">
+            <div class="image">
+                <img src="./resources/images/months/{{month.month | date: 'MM'}}.jpeg">
+            </div>
             <div class="content">
                 <div class="name">{{month.month | date: 'yyyy-MM'}}</div>
                 <p class="description">

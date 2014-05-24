@@ -156,18 +156,31 @@ public class MainController {
     String statistics() throws Exception {
         log.debug("statistics blogs start");
 
-        List<MonthStatistics> months = Lists.newArrayList();
-
-        months.add(getMonthStatisticsDetails(
-                //get current month first day and set time to 0:xx
-                DateTime.now().withDayOfMonth(1).withHourOfDay(0).getMillis(),
-                DateTime.now().getMillis()));
-
+        List<MonthStatistics> months = lastThreeMonthsStatistics();
         String resultArrayJson = mapper.writeValueAsString(months);
         log.debug(format("resultArrayJson: %s", resultArrayJson));
 
         log.debug("statistics blogs finish");
         return resultArrayJson;
+    }
+
+    private List<MonthStatistics> lastThreeMonthsStatistics() {
+        List<MonthStatistics> months = Lists.newArrayList();
+        long currentMonthFirstDay = DateTime.now().withDayOfMonth(1).withHourOfDay(0).getMillis();
+
+        months.add(getMonthStatisticsDetails(
+                currentMonthFirstDay, DateTime.now().getMillis()));
+
+        long lastMonthFirstDay =
+                DateTime.now().minusMonths(1).withDayOfMonth(1).withHourOfDay(0).getMillis();
+        months.add(getMonthStatisticsDetails(lastMonthFirstDay, currentMonthFirstDay));
+
+        long beforeLastMonthFirstDay =
+                DateTime.now().minusMonths(2).withDayOfMonth(1).withHourOfDay(0).getMillis();
+        months.add(getMonthStatisticsDetails(
+                beforeLastMonthFirstDay,
+                lastMonthFirstDay));
+        return months;
     }
 
     private MonthStatistics getMonthStatisticsDetails(long currentMonthStart, long currentMonthEnd) {
