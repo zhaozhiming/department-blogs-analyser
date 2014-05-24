@@ -20,6 +20,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -139,6 +141,16 @@ public class MainController {
         Long currentMonthFirstDay = DateTime.now().withDayOfMonth(1).withHourOfDay(0).getMillis();
         List<Object[]> result = blogReadRepository.top(currentMonthFirstDay);
 
+        List<Top> tops = encapsulateResult(currentMonthFirstDay, result);
+        sortTops(tops);
+        String resultArrayJson = mapper.writeValueAsString(tops);
+        log.debug(format("resultArrayJson: %s", resultArrayJson));
+
+        log.debug("top blogs finish");
+        return resultArrayJson;
+    }
+
+    private List<Top> encapsulateResult(Long currentMonthFirstDay, List<Object[]> result) {
         List<Top> tops = Lists.newArrayList();
         for (Object[] top : result) {
             log.debug(format("group result :%s", Arrays.toString(top)));
@@ -149,11 +161,15 @@ public class MainController {
             List<Blog> blogs = blogReadRepository.topDetail(currentMonthFirstDay, groupName);
             tops.add(new Top(groupName, count, view, blogs));
         }
+        return tops;
+    }
 
-        String resultArrayJson = mapper.writeValueAsString(tops);
-        log.debug(format("resultArrayJson: %s", resultArrayJson));
-
-        log.debug("top blogs finish");
-        return resultArrayJson;
+    private void sortTops(List<Top> tops) {
+        Collections.sort(tops, new Comparator<Top>() {
+            @Override
+            public int compare(Top o1, Top o2) {
+                return (int) (o2.getCount() - o1.getCount());
+            }
+        });
     }
 }
