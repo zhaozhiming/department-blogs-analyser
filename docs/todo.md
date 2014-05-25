@@ -1,9 +1,9 @@
 ## TODO LIST
 
 - [ ] config cron job
-- [ ] add send mail statistics info
 - [ ] add expert blog account to fetch url
 - [ ] war file exclude mail.jar
+- [x] add send mail top info
 - [x] add send mail with new blogs
 - [x] use velocity to generate mail html content
 - [x] refactor iteye time parse

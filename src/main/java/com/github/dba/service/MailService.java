@@ -1,6 +1,7 @@
 package com.github.dba.service;
 
 import com.github.dba.model.Blog;
+import com.github.dba.model.Top;
 import com.google.common.collect.Maps;
 import com.sina.sae.mail.SaeMail;
 import org.apache.commons.logging.Log;
@@ -43,6 +44,43 @@ public class MailService {
         log.debug("send new blogs mail start");
         log.debug(format("blogs: %s", blogs));
 
+        SaeMail mail = createSaeMailInstance();
+        Map<String, Object> model = Maps.newHashMap();
+        model.put("blogs", blogs);
+
+        sendMail("[通知]有人发文章啦~大家速顶!", mail, model, "new_blog_mail.vm");
+
+        log.debug("send new blogs mail finish");
+    }
+
+    public void sendTops(List<Top> tops) {
+        log.debug("send tops mail start");
+        log.debug(format("tops: %s", tops));
+
+        SaeMail mail = createSaeMailInstance();
+        Map<String, Object> model = Maps.newHashMap();
+        model.put("tops", tops);
+
+        sendMail("[通知]本月文章排行榜", mail, model, "top_blog_mail.vm");
+
+        log.debug("send tops mail finish");
+    }
+
+    private void sendMail(String subject, SaeMail mail, Map<String, Object> model, String temple) {
+        mail.setSubject(subject);
+
+        String content = VelocityEngineUtils.mergeTemplateIntoString(
+                velocityConfigurer.getVelocityEngine(), temple,
+                MAIL_ENCODING, model);
+        log.debug(format("mail content:%s", content));
+
+        mail.setContent(content);
+        if (!mail.send()) {
+            log.debug("send mail fail");
+        }
+    }
+
+    private SaeMail createSaeMailInstance() {
         SaeMail mail = new SaeMail();
         mail.setFrom(sendMail);
         mail.setSmtpUsername(sendMail);
@@ -51,24 +89,8 @@ public class MailService {
         mail.setSmtpPort(smtpPort);
 
         mail.setTo(new String[]{toMail});
-        mail.setSubject("[通知]有人发文章啦~大家速顶!");
         mail.setContentType("HTML");
         mail.setChartset("UTF-8");
-
-        Map<String, Object> model = Maps.newHashMap();
-        model.put("blogs", blogs);
-
-        String content = VelocityEngineUtils.mergeTemplateIntoString(
-                velocityConfigurer.getVelocityEngine(), "new_blog_mail.vm", MAIL_ENCODING, model
-        );
-        log.debug(format("mail content:%s", content));
-
-        mail.setContent(content);
-
-        if (!mail.send()) {
-            log.debug("send new blogs mail fail");
-        }
-
-        log.debug("send new blogs mail finish");
+        return mail;
     }
 }

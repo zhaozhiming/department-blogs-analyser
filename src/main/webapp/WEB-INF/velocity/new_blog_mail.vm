@@ -1,7 +1,7 @@
 <h2>又有${blogs.size()}篇雄文来袭，欢迎大家点击围观，信息如下：</h2>
 <br/>
 <br/>
-<table>
+<table border="1">
     <thead>
     <tr>
         <th>标题</th>

@@ -61,10 +61,17 @@ public class MainController {
     private String members;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @RequestMapping(value = "/mail", method = RequestMethod.GET)
+    @RequestMapping(value = "/mail/new", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    public void mail() {
+    public void mailNew() {
         mailService.sendNewBlogs(blogReadRepository.findAll());
+    }
+
+    @RequestMapping(value = "/mail/top", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void mailTop() {
+        List<Top> tops = getCurrentMonthTops();
+        mailService.sendTops(tops);
     }
 
     @RequestMapping(value = "/blog/fetch", method = RequestMethod.GET)
@@ -149,15 +156,19 @@ public class MainController {
     String top() throws Exception {
         log.debug("top blogs start");
 
-        Long currentMonthFirstDay = currentMonthFirstDay();
-        List<Object[]> result = blogReadRepository.top(currentMonthFirstDay);
-
-        List<Top> tops = encapsulateResult(currentMonthFirstDay, result);
-        String resultArrayJson = mapper.writeValueAsString(tops);
+        String resultArrayJson =
+                mapper.writeValueAsString(getCurrentMonthTops());
         log.debug(format("resultArrayJson: %s", resultArrayJson));
 
         log.debug("top blogs finish");
         return resultArrayJson;
+    }
+
+    private List<Top> getCurrentMonthTops() {
+        Long currentMonthFirstDay = currentMonthFirstDay();
+        List<Object[]> result = blogReadRepository.top(currentMonthFirstDay);
+
+        return encapsulateResult(currentMonthFirstDay, result);
     }
 
     @RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")

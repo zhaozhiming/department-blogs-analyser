@@ -1,0 +1,31 @@
+<h2>当月排行榜</h2>
+<br/>
+<br/>
+<table border="1">
+    <thead>
+    <tr>
+        <th>排名</th>
+        <th>组名</th>
+        <th>文章数量</th>
+        <th>阅读次数</th>
+        <th>文章列表</th>
+    </tr>
+    </thead>
+    <tbody>
+    #foreach($top in $tops)
+    <tr>
+        <td>第$velocityCount名</td>
+        <td>$top.groupName</td>
+        <td>$top.count</td>
+        <td>$top.view</td>
+        <td>
+            <ul>
+            #foreach($blog in $top.blogs)
+                <li><a href="$blog.link">$blog.title</a></li>
+            #end
+            </ul>
+        </td>
+    </tr>
+    #end
+    </tbody>
+</table>
