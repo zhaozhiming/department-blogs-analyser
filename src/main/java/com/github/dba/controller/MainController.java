@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,10 +83,12 @@ public class MainController {
             batchBlogs.addAllBatchBlogs(iteyeFetcher.fetch(url));
         }
 
-        blogWriteRepository.save(batchBlogs.getUpdateBlogs());
+        blogWriteRepository.save(batchBlogs.merge());
 
         List<Blog> insertBlogs = batchBlogs.getInsertBlogs();
-        blogWriteRepository.save(insertBlogs);
+        if (!insertBlogs.isEmpty()) {
+            mailService.sendNewBlogs(insertBlogs);
+        }
 
         log.debug("blog fetch finish");
     }

@@ -2,9 +2,10 @@
 
 - [ ] config cron job
 - [ ] add send mail statistics info
-- [ ] add send mail function with sae
 - [ ] add expert blog account to fetch url
-- [ ] use velocity to generate mail html content
+- [ ] war file exclude mail.jar
+- [x] add send mail with new blogs
+- [x] use velocity to generate mail html content
 - [x] refactor iteye time parse
 - [x] sort top select by sql
 - [x] query page add result size

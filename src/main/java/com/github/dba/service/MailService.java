@@ -14,9 +14,12 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.String.format;
+
 @Service
 public class MailService {
     private static final Log log = LogFactory.getLog(MailService.class);
+    private static final String MAIL_ENCODING = "UTF-8";
 
     @Value("${send_mail}")
     private String sendMail;
@@ -38,9 +41,9 @@ public class MailService {
 
     public void sendNewBlogs(List<Blog> blogs) {
         log.debug("send new blogs mail start");
-        log.debug(String.format("blogs: %s", blogs));
-        SaeMail mail = new SaeMail();
+        log.debug(format("blogs: %s", blogs));
 
+        SaeMail mail = new SaeMail();
         mail.setFrom(sendMail);
         mail.setSmtpUsername(sendMail);
         mail.setSmtpPassword(mailPassword);
@@ -56,8 +59,9 @@ public class MailService {
         model.put("blogs", blogs);
 
         String content = VelocityEngineUtils.mergeTemplateIntoString(
-                velocityConfigurer.getVelocityEngine(), "new_blog_mail.vm", "UTF-8", model
+                velocityConfigurer.getVelocityEngine(), "new_blog_mail.vm", MAIL_ENCODING, model
         );
+        log.debug(format("mail content:%s", content));
 
         mail.setContent(content);
 

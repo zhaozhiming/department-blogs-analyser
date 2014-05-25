@@ -28,4 +28,11 @@ public class BatchBlogs {
         updateBlogs.addAll(batchBlogs.getUpdateBlogs());
         insertBlogs.addAll(batchBlogs.getInsertBlogs());
     }
+
+    public List<Blog> merge() {
+        List<Blog> merge = Lists.newArrayList();
+        merge.addAll(insertBlogs);
+        merge.addAll(updateBlogs);
+        return merge;
+    }
 }
