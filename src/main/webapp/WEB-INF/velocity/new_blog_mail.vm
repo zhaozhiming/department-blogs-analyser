@@ -1,0 +1,23 @@
+<h2>又有${blogs.size()}篇雄文来袭，欢迎大家点击围观，信息如下：</h2>
+<br/>
+<br/>
+<table>
+    <thead>
+    <tr>
+        <th>标题</th>
+        <th>网站</th>
+        <th>作者</th>
+        <th>分组</th>
+    </tr>
+    </thead>
+    <tbody>
+    #foreach($blog in $blogs)
+    <tr>
+        <td><a href="$blog.link">$blog.title</a></td>
+        <td>$blog.website</td>
+        <td>$blog.author.name</td>
+        <td>$blog.author.groupName</td>
+    </tr>
+    #end
+    </tbody>
+</table>

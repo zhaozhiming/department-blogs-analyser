@@ -37,11 +37,14 @@ dependencies {
             "javax.servlet.jsp:jsp-api:2.1"
     )
 
+    //mail
     compile files('./lib/sae-local-1.1.0.jar')
     compile files('./lib/mail.jar')
+    compile("org.apache.velocity:velocity:1.7")
 
     //spring
     compile("org.springframework:spring-context:" + springVersion)
+    compile("org.springframework:spring-context-support:" + springVersion)
     compile("org.springframework:spring-aop:" + springVersion)
     compile("org.springframework:spring-beans:" + springVersion)
     compile("org.springframework:spring-core:" + springVersion)

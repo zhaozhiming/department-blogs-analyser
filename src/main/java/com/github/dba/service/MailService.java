@@ -1,13 +1,18 @@
 package com.github.dba.service;
 
 import com.github.dba.model.Blog;
+import com.google.common.collect.Maps;
 import com.sina.sae.mail.SaeMail;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.velocity.VelocityEngineUtils;
+import org.springframework.web.servlet.view.velocity.VelocityConfigurer;
 
+import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MailService {
@@ -28,7 +33,12 @@ public class MailService {
     @Value("${to_mail}")
     private String toMail;
 
+    @Resource(name = "velocityConfigurer")
+    private VelocityConfigurer velocityConfigurer;
+
     public void sendNewBlogs(List<Blog> blogs) {
+        log.debug("send new blogs mail start");
+        log.debug(String.format("blogs: %s", blogs));
         SaeMail mail = new SaeMail();
 
         mail.setFrom(sendMail);
@@ -41,10 +51,20 @@ public class MailService {
         mail.setSubject("[通知]有人发文章啦~大家速顶!");
         mail.setContentType("HTML");
         mail.setChartset("UTF-8");
-        mail.setContent("fyi");
+
+        Map<String, Object> model = Maps.newHashMap();
+        model.put("blogs", blogs);
+
+        String content = VelocityEngineUtils.mergeTemplateIntoString(
+                velocityConfigurer.getVelocityEngine(), "new_blog_mail.vm", "UTF-8", model
+        );
+
+        mail.setContent(content);
 
         if (!mail.send()) {
             log.debug("send new blogs mail fail");
         }
+
+        log.debug("send new blogs mail finish");
     }
 }

@@ -65,7 +65,7 @@ public class MainController {
     @RequestMapping(value = "/mail", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public void mail() {
-        mailService.sendNewBlogs(new ArrayList<Blog>());
+        mailService.sendNewBlogs(blogReadRepository.findAll());
     }
 
     @RequestMapping(value = "/blog/fetch", method = RequestMethod.GET)

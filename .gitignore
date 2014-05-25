@@ -9,6 +9,7 @@
 *.iml
 *.ipr
 *.iws
+*.log
 
 .gradle
 build
