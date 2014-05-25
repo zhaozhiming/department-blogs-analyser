@@ -88,7 +88,7 @@ public class MailService {
         mail.setSmtpHost(smtpHost);
         mail.setSmtpPort(smtpPort);
 
-        mail.setTo(new String[]{toMail});
+        mail.setTo(toMail.split(","));
         mail.setContentType("HTML");
         mail.setChartset("UTF-8");
         return mail;

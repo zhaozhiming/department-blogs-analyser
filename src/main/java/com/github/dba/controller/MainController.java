@@ -61,12 +61,6 @@ public class MainController {
     private String members;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @RequestMapping(value = "/mail/new", method = RequestMethod.GET)
-    @ResponseStatus(value = HttpStatus.OK)
-    public void mailNew() {
-        mailService.sendNewBlogs(blogReadRepository.findAll());
-    }
-
     @RequestMapping(value = "/mail/top", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public void mailTop() {

@@ -1,6 +1,6 @@
 ## TODO LIST
 
-- [ ] config cron job
+- [x] config cron job
 - [x] add expert blog account to fetch url
 - [x] war file exclude mail.jar
 - [x] add send mail top info
