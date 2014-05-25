@@ -70,8 +70,9 @@ public class MainController {
     @RequestMapping(value = "/mail/top", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public void mailTop() {
-        List<Top> tops = getCurrentMonthTops();
-        mailService.sendTops(tops);
+        log.debug("mail top start");
+        mailService.sendTops(getCurrentMonthTops());
+        log.debug("mail top finish");
     }
 
     @RequestMapping(value = "/blog/fetch", method = RequestMethod.GET)
@@ -79,7 +80,7 @@ public class MainController {
     public void blogFetch() throws Exception {
         log.debug("blog fetch start");
         String[] urlArray = urls.split(",");
-        log.debug("urls:" + Arrays.toString(urlArray));
+        log.debug(format("urls:%s", Arrays.toString(urlArray)));
 
         BatchBlogs batchBlogs = new BatchBlogs();
         for (String url : urlArray) {
@@ -89,7 +90,6 @@ public class MainController {
             }
             batchBlogs.addAllBatchBlogs(iteyeFetcher.fetch(url));
         }
-
         blogWriteRepository.save(batchBlogs.merge());
 
         List<Blog> insertBlogs = batchBlogs.getInsertBlogs();

@@ -92,4 +92,5 @@ dependencies {
 
 war {
     baseName = 'depblog'
+    rootSpec.exclude("**/mail.jar")
 }
