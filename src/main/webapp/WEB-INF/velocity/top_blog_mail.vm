@@ -14,7 +14,7 @@
     <tbody>
     #foreach($top in $tops)
     <tr>
-        <td>第$velocityCount名</td>
+        <td>$foreach.count</td>
         <td>$top.groupName</td>
         <td>$top.count</td>
         <td>$top.view</td>
