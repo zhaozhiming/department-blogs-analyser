@@ -5,11 +5,11 @@
 - [ ] add create blog view url
 - [ ] add clear useless blog view record in the create blog view url
 - [ ] add cron with create blog view 
-- [ ] fix top cron
 - [ ] change top logic 
 - [ ] change statistics logic
 - [ ] modify new blog mail with left only blog title and link
 - [ ] modify top blog mail with add blog view and comment
+- [x] fix top cron
 - [x] add crob file to git
   
 #### before 2014-5-25
