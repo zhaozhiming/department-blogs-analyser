@@ -1,5 +1,18 @@
 ## TODO LIST
 
+#### 2014-5-26
+- [ ] add blog view table
+- [ ] add create blog view url
+- [ ] add clear useless blog view record in the create blog view url
+- [ ] add cron with create blog view 
+- [ ] fix top cron
+- [ ] add crob file to git
+- [ ] change top logic 
+- [ ] change statistics logic
+- [ ] modify new blog mail with left only blog title and link
+- [ ] modify top blog mail with add blog view and comment
+  
+#### before 2014-5-25
 - [x] config cron job
 - [x] add expert blog account to fetch url
 - [x] war file exclude mail.jar
