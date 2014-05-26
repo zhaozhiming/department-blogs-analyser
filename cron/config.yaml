@@ -1,0 +1,11 @@
+name: depblog
+version: 1
+cron:
+- description: find new blog to mail
+  url: /api/blog/fetch
+  schedule: every 2 hours
+  timezone: Beijing
+- description: find top blog to mail
+  url: /api/mail/top
+  schedule: every monday of month 10:00
+  timezone: Beijing
