@@ -96,4 +96,9 @@ public class CsdnFetcher {
         return batchBlogs;
     }
 
+    public int fetchView(String url) throws Exception {
+        Document doc = fetchUrlDoc(url);
+        return fetchNumber(doc.select(
+                "#article_details div.article_manage span.link_view").get(0).text());
+    }
 }

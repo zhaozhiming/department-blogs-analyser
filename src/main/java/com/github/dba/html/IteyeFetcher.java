@@ -79,4 +79,10 @@ public class IteyeFetcher {
 
         return batchBlogs;
     }
+
+    public int fetchView(String url) throws Exception {
+        Document doc = fetchUrlDoc(url);
+        return fetchNumber(doc.select(
+                "#content div.blog_main div.blog_bottom li").get(1).text());
+    }
 }

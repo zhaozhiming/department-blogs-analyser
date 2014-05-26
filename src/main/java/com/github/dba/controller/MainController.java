@@ -4,6 +4,7 @@ import com.github.dba.html.CsdnFetcher;
 import com.github.dba.html.IteyeFetcher;
 import com.github.dba.model.*;
 import com.github.dba.repo.read.BlogReadRepository;
+import com.github.dba.repo.write.BlogViewWriteRepository;
 import com.github.dba.repo.write.BlogWriteRepository;
 import com.github.dba.repo.write.DepGroupWriteRepository;
 import com.github.dba.repo.write.DepMemberWriteRepository;
@@ -49,6 +50,9 @@ public class MainController {
     private BlogWriteRepository blogWriteRepository;
 
     @Autowired
+    private BlogViewWriteRepository blogViewWriteRepository;
+
+    @Autowired
     private MailService mailService;
 
     @Value("${urls}")
@@ -78,7 +82,7 @@ public class MainController {
 
         BatchBlogs batchBlogs = new BatchBlogs();
         for (String url : urlArray) {
-            if (url.contains(CsdnFetcher.CSDN_KEY_WORD)) {
+            if (isCsdn(url)) {
                 batchBlogs.addAllBatchBlogs(csdnFetcher.fetch(url));
                 continue;
             }
@@ -158,13 +162,6 @@ public class MainController {
         return resultArrayJson;
     }
 
-    private List<Top> getCurrentMonthTops() {
-        Long currentMonthFirstDay = currentMonthFirstDay();
-        List<Object[]> result = blogReadRepository.top(currentMonthFirstDay);
-
-        return encapsulateResult(currentMonthFirstDay, result);
-    }
-
     @RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public
     @ResponseBody
@@ -177,6 +174,40 @@ public class MainController {
 
         log.debug("statistics blogs finish");
         return resultArrayJson;
+    }
+
+    @RequestMapping(value = "/blog/view", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void generateBlogViews() throws Exception {
+        log.debug("generate blog views start");
+
+        long threeMonthsAgo = DateTime.now().minusMonths(3).getMillis();
+        List<Blog> blogs = blogReadRepository.findAfterTime(threeMonthsAgo);
+
+        long now = DateTime.now().getMillis();
+        List<BlogView> blogViews = Lists.newArrayList();
+        for (Blog blog : blogs) {
+            Long blogId = blog.getId();
+            Long blogTime = blog.getTime();
+            int preView = blog.getView();
+            String link = blog.getLink();
+            int total = isCsdn(link) ?
+                    csdnFetcher.fetchView(link) : iteyeFetcher.fetchView(link);
+            int increment = total - preView;
+
+            blogViews.add(new BlogView(blogId, total, increment, blogTime, now));
+        }
+        log.debug(format("blog views: %s", blogViews));
+        blogViewWriteRepository.save(blogViews);
+
+        log.debug("generate blog views finish");
+    }
+
+    private List<Top> getCurrentMonthTops() {
+        Long currentMonthFirstDay = currentMonthFirstDay();
+        List<Object[]> result = blogReadRepository.top(currentMonthFirstDay);
+
+        return encapsulateResult(currentMonthFirstDay, result);
     }
 
     private List<MonthStatistics> lastThreeMonthsStatistics() {
@@ -224,5 +255,9 @@ public class MainController {
             tops.add(new Top(groupName, count, view, blogs));
         }
         return tops;
+    }
+
+    private boolean isCsdn(String url) {
+        return url.contains(CsdnFetcher.CSDN_KEY_WORD);
     }
 }

@@ -9,6 +9,7 @@
         <class>com.github.dba.model.Blog</class>
         <class>com.github.dba.model.DepGroup</class>
         <class>com.github.dba.model.DepMember</class>
+        <class>com.github.dba.model.BlogView</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/deblog" />
@@ -27,6 +28,7 @@
         <class>com.github.dba.model.Blog</class>
         <class>com.github.dba.model.DepGroup</class>
         <class>com.github.dba.model.DepMember</class>
+        <class>com.github.dba.model.BlogView</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/deblog" />
