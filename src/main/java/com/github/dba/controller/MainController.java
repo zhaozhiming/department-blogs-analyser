@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.github.dba.util.DbaUtil.currentMonthFirstDay;
 import static java.lang.String.format;
 
 @Controller
@@ -174,7 +173,13 @@ public class MainController {
     String statistics() throws Exception {
         log.debug("statistics blogs start");
 
-        List<MonthStatistics> months = lastThreeMonthsStatistics();
+        List<MonthStatistics> months = Lists.newArrayList();
+        for (int i = 0; i < 3; i++) {
+            long statisticsTime = DateTime.now().minusMonths(i).getMillis();
+            List<Top> monthTops = getMonthTops(statisticsTime);
+            months.add(new MonthStatistics(statisticsTime, monthTops));
+        }
+
         String resultArrayJson = mapper.writeValueAsString(months);
         log.debug(format("resultArrayJson: %s", resultArrayJson));
 
@@ -210,41 +215,8 @@ public class MainController {
         log.debug("generate blog views finish");
     }
 
-    private List<Top> getMonthTops(long afterTime) {
-        return encapsulateResult(afterTime, blogReadRepository.top(afterTime));
-    }
-
-    private List<MonthStatistics> lastThreeMonthsStatistics() {
-        List<MonthStatistics> months = Lists.newArrayList();
-        long currentMonthFirstDay = currentMonthFirstDay();
-
-        months.add(getMonthStatisticsDetails(
-                currentMonthFirstDay, DateTime.now().getMillis()));
-
-        long lastMonthFirstDay =
-                DateTime.now().minusMonths(1).withDayOfMonth(1).withHourOfDay(0).getMillis();
-        months.add(getMonthStatisticsDetails(lastMonthFirstDay, currentMonthFirstDay));
-
-        long beforeLastMonthFirstDay =
-                DateTime.now().minusMonths(2).withDayOfMonth(1).withHourOfDay(0).getMillis();
-        months.add(getMonthStatisticsDetails(
-                beforeLastMonthFirstDay, lastMonthFirstDay));
-        return months;
-    }
-
-    private MonthStatistics getMonthStatisticsDetails(long monthStartDay, long monthEndDay) {
-        List<Object[]> result = blogReadRepository.statistics(monthStartDay, monthEndDay);
-
-        List<StatisticsDetail> statisticsDetails = Lists.newArrayList();
-        for (Object[] statistics : result) {
-            log.debug(format("statistics result :%s", Arrays.toString(statistics)));
-            String groupName = statistics[0].toString();
-            long count = (Long) statistics[1];
-            long view = (Long) statistics[2];
-
-            statisticsDetails.add(new StatisticsDetail(groupName, count, view));
-        }
-        return new MonthStatistics(monthStartDay, statisticsDetails);
+    private List<Top> getMonthTops(long time) {
+        return encapsulateResult(time, blogReadRepository.top(time));
     }
 
     private List<Top> encapsulateResult(Long afterTime, List<Object[]> groupResult) {

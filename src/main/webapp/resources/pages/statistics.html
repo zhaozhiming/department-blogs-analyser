@@ -9,9 +9,9 @@
                 <div class="name">{{month.month | date: 'yyyy-MM'}}</div>
                 <p class="description">
                     <div class="ui list">
-                        <div class="item" ng-repeat="group in month.groups">
-                            <div class="header">第{{$index + 1}}名 {{group.groupName}}组</div>
-                            文章数量 {{group.count}}, 阅读次数 {{group.view}}
+                        <div class="item" ng-repeat="top in month.tops">
+                            <div class="header">第{{$index + 1}}名 {{top.groupName}}</div>
+                            文章数量 {{top.count}}, 阅读次数 {{top.view}}
                         </div>
                     </div>
 

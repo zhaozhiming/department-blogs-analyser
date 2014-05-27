@@ -4,14 +4,14 @@ import java.util.List;
 
 public class MonthStatistics {
     private long month;
-    private List<StatisticsDetail> groups;
+    private List<Top> tops;
 
     public MonthStatistics() {
     }
 
-    public MonthStatistics(long month, List<StatisticsDetail> groups) {
+    public MonthStatistics(long month, List<Top> tops) {
         this.month = month;
-        this.groups = groups;
+        this.tops = tops;
     }
 
     public long getMonth() {
@@ -22,11 +22,11 @@ public class MonthStatistics {
         this.month = month;
     }
 
-    public List<StatisticsDetail> getGroups() {
-        return groups;
+    public List<Top> getTops() {
+        return tops;
     }
 
-    public void setGroups(List<StatisticsDetail> groups) {
-        this.groups = groups;
+    public void setTops(List<Top> tops) {
+        this.tops = tops;
     }
 }
