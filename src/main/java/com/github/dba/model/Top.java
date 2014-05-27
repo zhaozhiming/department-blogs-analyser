@@ -8,13 +8,9 @@ public class Top {
     private long view;
     private List<Blog> blogs;
 
-    public Top() {
-    }
-
-    public Top(String groupName, long count, long view, List<Blog> blogs) {
+    public Top(String groupName, long count, List<Blog> blogs) {
         this.groupName = groupName;
         this.count = count;
-        this.view = view;
         this.blogs = blogs;
     }
 
@@ -48,5 +44,13 @@ public class Top {
 
     public void setBlogs(List<Blog> blogs) {
         this.blogs = blogs;
+    }
+
+    public void calcView() {
+        int totalView = 0;
+        for (Blog blog : blogs) {
+            totalView += blog.getView();
+        }
+        this.view = totalView;
     }
 }

@@ -4,6 +4,7 @@ import com.github.dba.html.CsdnFetcher;
 import com.github.dba.html.IteyeFetcher;
 import com.github.dba.model.*;
 import com.github.dba.repo.read.BlogReadRepository;
+import com.github.dba.repo.read.BlogViewReadRepository;
 import com.github.dba.repo.write.BlogViewWriteRepository;
 import com.github.dba.repo.write.BlogWriteRepository;
 import com.github.dba.repo.write.DepGroupWriteRepository;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.github.dba.util.DbaUtil.currentMonthFirstDay;
@@ -53,6 +56,9 @@ public class MainController {
     private BlogViewWriteRepository blogViewWriteRepository;
 
     @Autowired
+    private BlogViewReadRepository blogViewReadRepository;
+
+    @Autowired
     private MailService mailService;
 
     @Value("${urls}")
@@ -69,7 +75,7 @@ public class MainController {
     @ResponseStatus(value = HttpStatus.OK)
     public void mailTop() {
         log.debug("mail top start");
-        mailService.sendTops(getCurrentMonthTops());
+        mailService.sendTops(getMonthTops(DateTime.now().getMillis()));
         log.debug("mail top finish");
     }
 
@@ -155,7 +161,7 @@ public class MainController {
         log.debug("top blogs start");
 
         String resultArrayJson =
-                mapper.writeValueAsString(getCurrentMonthTops());
+                mapper.writeValueAsString(getMonthTops(DateTime.now().getMillis()));
         log.debug(format("resultArrayJson: %s", resultArrayJson));
 
         log.debug("top blogs finish");
@@ -193,7 +199,8 @@ public class MainController {
             String link = blog.getLink();
             int total = isCsdn(link) ?
                     csdnFetcher.fetchView(link) : iteyeFetcher.fetchView(link);
-            int increment = total - preView;
+            int increment = blogViewReadRepository.findByBlogId(blogId).isEmpty() ?
+                    total : (total - preView);
 
             blogViews.add(new BlogView(blogId, total, increment, blogTime, now));
         }
@@ -203,11 +210,8 @@ public class MainController {
         log.debug("generate blog views finish");
     }
 
-    private List<Top> getCurrentMonthTops() {
-        Long currentMonthFirstDay = currentMonthFirstDay();
-        List<Object[]> result = blogReadRepository.top(currentMonthFirstDay);
-
-        return encapsulateResult(currentMonthFirstDay, result);
+    private List<Top> getMonthTops(long afterTime) {
+        return encapsulateResult(afterTime, blogReadRepository.top(afterTime));
     }
 
     private List<MonthStatistics> lastThreeMonthsStatistics() {
@@ -243,18 +247,33 @@ public class MainController {
         return new MonthStatistics(monthStartDay, statisticsDetails);
     }
 
-    private List<Top> encapsulateResult(Long currentMonthFirstDay, List<Object[]> result) {
+    private List<Top> encapsulateResult(Long afterTime, List<Object[]> groupResult) {
         List<Top> tops = Lists.newArrayList();
-        for (Object[] top : result) {
-            log.debug(format("group result :%s", Arrays.toString(top)));
-            String groupName = top[0].toString();
-            long count = (Long) top[1];
-            long view = (Long) top[2];
+        for (Object[] result : groupResult) {
+            log.debug(format("group result :%s", Arrays.toString(result)));
+            String groupName = result[0].toString();
+            long count = (Long) result[1];
 
-            List<Blog> blogs = blogReadRepository.topDetail(currentMonthFirstDay, groupName);
-            tops.add(new Top(groupName, count, view, blogs));
+            List<Blog> blogs = blogReadRepository.topDetail(afterTime, groupName);
+            for (Blog blog : blogs) {
+                List<BlogView> blogViews = blogViewReadRepository.findByBlogId(blog.getId());
+                blog.statisticsViewByBlogViews(blogViews);
+            }
+            Top top = new Top(groupName, count, blogs);
+            top.calcView();
+            tops.add(top);
         }
+        sortTopsByView(tops);
         return tops;
+    }
+
+    private void sortTopsByView(List<Top> tops) {
+        Collections.sort(tops, new Comparator<Top>() {
+            @Override
+            public int compare(Top top1, Top top2) {
+                return (int) (top2.getView() - top1.getView());
+            }
+        });
     }
 
     private boolean isCsdn(String url) {

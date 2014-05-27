@@ -3,10 +3,12 @@
 #### 2014-5-26
 - [ ] add clear useless blog view record in the create blog view url
 - [ ] add cron with create blog view 
-- [ ] change top logic 
 - [ ] change statistics logic
 - [ ] modify new blog mail with left only blog title and link
 - [ ] modify top blog mail with add blog view and comment
+- [x] modify top order by view
+- [x] when blog is not exist, blog view's increment is total
+- [x] change top logic 
 - [x] add blog view table
 - [x] add create blog view url
 - [x] fix top cron

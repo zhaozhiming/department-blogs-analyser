@@ -14,10 +14,10 @@ public interface BlogReadRepository extends JpaRepository<Blog, Long>, JpaSpecif
     Blog findByBlogIdAndWebsite(@Param("blogId") String blogId,
                                 @Param("website") String website);
 
-    @Query(value = "SELECT b.author.groupName, count(b), sum(b.view) FROM blogs b WHERE b.time >= :time group by b.author.groupName  order by count(b) desc ")
+    @Query(value = "SELECT b.author.groupName, count(b), sum(b.view) FROM blogs b WHERE b.time <= :time group by b.author.groupName  order by count(b) desc ")
     List<Object[]> top(@Param("time") Long time);
 
-    @Query(value = "select b from blogs b where b.time >= :time and b.author.groupName = :groupName")
+    @Query(value = "select b from blogs b where b.time <= :time and b.author.groupName = :groupName")
     List<Blog> topDetail(@Param("time") Long time, @Param("groupName") String groupName);
 
     @Query(value = "SELECT b.author.groupName, count(b), sum(b.view) FROM blogs b WHERE b.time >= :startTime and b.time < :endTime group by b.author.groupName order by count(b) desc ")
@@ -25,4 +25,7 @@ public interface BlogReadRepository extends JpaRepository<Blog, Long>, JpaSpecif
 
     @Query("select b from blogs b where b.time >= :time")
     List<Blog> findAfterTime(@Param("time") Long time);
+
+    @Query("select b from blogs b where b.time < :time")
+    List<Blog> findBefore(@Param("time") Long time);
 }

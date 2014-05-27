@@ -11,12 +11,16 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.text.ParseException;
+import java.util.List;
 
 import static java.lang.String.format;
 
 @Entity(name = "blogs")
 @Table(name = "blogs", uniqueConstraints = @UniqueConstraint(columnNames = {"blogId", "website"}))
 public class Blog {
+    private static final long ONE_MONTH = 1000 * 60 * 60 * 24 * 30L;
+    private static final long TWO_MONTH = ONE_MONTH * 2;
+    private static final long THREE_MONTH = ONE_MONTH * 3;
     private static final String PAGE_DATE_FORMAT = "yyyy-MM-dd";
 
     @Id
@@ -171,5 +175,24 @@ public class Blog {
                 return predicate;
             }
         });
+    }
+
+    public void statisticsViewByBlogViews(List<BlogView> blogViews) {
+        int statisticsView = 0;
+        for (BlogView blogView : blogViews) {
+            Long createTime = blogView.getBlogTime();
+            Long recordTime = blogView.getRecordTime();
+            int increment = blogView.getIncrement();
+
+            long distanceTime = recordTime - createTime;
+            if (distanceTime < ONE_MONTH) {
+                statisticsView += increment * 1.0;
+            } else if (ONE_MONTH <= distanceTime && distanceTime < TWO_MONTH) {
+                statisticsView += increment * 0.5;
+            } else if (TWO_MONTH <= distanceTime && distanceTime < THREE_MONTH) {
+                statisticsView += increment * 0.25;
+            }
+        }
+        this.view = statisticsView;
     }
 }
