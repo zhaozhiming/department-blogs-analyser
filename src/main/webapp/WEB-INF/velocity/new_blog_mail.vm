@@ -6,8 +6,6 @@
     <tr>
         <th>标题</th>
         <th>网站</th>
-        <th>作者</th>
-        <th>分组</th>
     </tr>
     </thead>
     <tbody>
@@ -15,8 +13,6 @@
     <tr>
         <td><a href="$blog.link">$blog.title</a></td>
         <td>$blog.website</td>
-        <td>$blog.author.name</td>
-        <td>$blog.author.groupName</td>
     </tr>
     #end
     </tbody>

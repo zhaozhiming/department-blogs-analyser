@@ -21,7 +21,7 @@
         <td>
             <ul>
             #foreach($blog in $top.blogs)
-                <li><a href="$blog.link">$blog.title</a></li>
+                <li><a href="$blog.link">$blog.title</a>, 阅读次数$blog.view, 评论数$blog.comment</li>
             #end
             </ul>
         </td>
