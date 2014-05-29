@@ -9,3 +9,7 @@ cron:
   url: /api/mail/top
   schedule: every monday of month 10:00
   timezone: Beijing
+- description: fetch blog view
+  url: /api/blog/view
+  schedule:  every day of month 03:00
+  timezone: Beijing

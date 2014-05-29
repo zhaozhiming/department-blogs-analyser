@@ -193,8 +193,9 @@ public class MainController {
         log.debug("generate blog views start");
 
         long threeMonthsAgo = DateTime.now().minusMonths(3).getMillis();
-        List<Blog> blogs = blogReadRepository.findAfterTime(threeMonthsAgo);
+        blogViewWriteRepository.clear(threeMonthsAgo);
 
+        List<Blog> blogs = blogReadRepository.findAfterTime(threeMonthsAgo);
         long now = DateTime.now().getMillis();
         List<BlogView> blogViews = Lists.newArrayList();
         for (Blog blog : blogs) {

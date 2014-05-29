@@ -1,8 +1,8 @@
 ## TODO LIST
 
 #### 2014-5-26
-- [ ] add clear useless blog view record in the create blog view url
-- [ ] add cron with create blog view 
+- [x] add clear useless blog view record in the create blog view url
+- [x] add cron with create blog view 
 - [x] modify new blog mail with left only blog title and link
 - [x] modify top blog mail with add blog view and comment
 - [x] change statistics logic
