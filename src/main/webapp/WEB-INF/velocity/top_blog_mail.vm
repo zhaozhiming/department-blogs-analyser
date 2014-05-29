@@ -21,7 +21,7 @@
         <td>
             <ul>
             #foreach($blog in $top.blogs)
-                <li><a href="$blog.link">$blog.title</a>, 阅读次数$blog.view, 评论数$blog.comment</li>
+                <li><a href="$blog.link">$blog.title</a>, 阅读次数$blog.view, 评论数$blog.comment, 作者-$blog.author.name</li>
             #end
             </ul>
         </td>
@@ -29,3 +29,5 @@
     #end
     </tbody>
 </table>
+
+<h4>更多信息请访问网站--<a href="http://depblog.sinaapp.com/" target="_blank">部门博客</a></h4>
