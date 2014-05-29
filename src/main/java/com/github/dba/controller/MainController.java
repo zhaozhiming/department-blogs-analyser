@@ -10,6 +10,7 @@ import com.github.dba.repo.write.BlogWriteRepository;
 import com.github.dba.repo.write.DepGroupWriteRepository;
 import com.github.dba.repo.write.DepMemberWriteRepository;
 import com.github.dba.service.MailService;
+import com.github.dba.util.DbaUtil;
 import com.google.common.collect.Lists;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -87,7 +88,7 @@ public class MainController {
 
         BatchBlogs batchBlogs = new BatchBlogs();
         for (String url : urlArray) {
-            if (isCsdn(url)) {
+            if (DbaUtil.isCsdn(url)) {
                 batchBlogs.addAllBatchBlogs(csdnFetcher.fetch(url));
                 continue;
             }
@@ -203,7 +204,7 @@ public class MainController {
             Long blogTime = blog.getTime();
             int preView = blog.getView();
             String link = blog.getLink();
-            int total = isCsdn(link) ?
+            int total = DbaUtil.isCsdn(link) ?
                     csdnFetcher.fetchView(link) : iteyeFetcher.fetchView(link);
             int increment = blogViewReadRepository.findByBlogId(blogId).isEmpty() ?
                     total : (total - preView);
@@ -249,7 +250,4 @@ public class MainController {
         });
     }
 
-    private boolean isCsdn(String url) {
-        return url.contains(CsdnFetcher.CSDN_KEY_WORD);
-    }
 }

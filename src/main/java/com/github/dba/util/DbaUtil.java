@@ -1,5 +1,6 @@
 package com.github.dba.util;
 
+import com.github.dba.html.CsdnFetcher;
 import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -86,6 +87,10 @@ public class DbaUtil {
 
     private static String regex(String source, Pattern compile) {
         return DbaUtil.fetchNumber(source, compile, "can't find number with regex");
+    }
+
+    public static boolean isCsdn(String url) {
+        return url.contains(CsdnFetcher.CSDN_KEY_WORD);
     }
 
     enum Time {
