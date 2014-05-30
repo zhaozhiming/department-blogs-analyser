@@ -42,6 +42,8 @@ public class CsdnFetcher {
 
     private int getTotalPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
+        if (doc == null) return 1;
+
         Elements statistics = doc.select("#blog_statistics li");
         int total = 0;
         for (int i = 0; i <= 2; i++) {
@@ -52,6 +54,8 @@ public class CsdnFetcher {
 
     private BatchBlogs fetchPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
+        if (doc == null) return new BatchBlogs();
+
         BatchBlogs batchBlogs = new BatchBlogs();
         batchBlogs.addAllBatchBlogs(fetchBlogs(doc, "article_toplist"));
         batchBlogs.addAllBatchBlogs(fetchBlogs(doc, "article_list"));
@@ -98,6 +102,8 @@ public class CsdnFetcher {
 
     public int fetchView(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
+        if (doc == null) return -1;
+
         return fetchNumber(doc.select(
                 "#article_details div.article_manage span.link_view").get(0).text());
     }

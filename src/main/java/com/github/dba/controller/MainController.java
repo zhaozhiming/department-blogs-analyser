@@ -206,6 +206,9 @@ public class MainController {
             String link = blog.getLink();
             int total = DbaUtil.isCsdn(link) ?
                     csdnFetcher.fetchView(link) : iteyeFetcher.fetchView(link);
+            //total equals -1 mean can't connect to the url
+            if (total == -1) continue;
+
             int increment = blogViewReadRepository.findByBlogId(blogId).isEmpty() ?
                     total : (total - preView);
 

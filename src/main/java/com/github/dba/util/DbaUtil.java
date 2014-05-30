@@ -1,6 +1,8 @@
 package com.github.dba.util;
 
 import com.github.dba.html.CsdnFetcher;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,8 +16,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.Integer.valueOf;
+import static java.lang.String.format;
 
 public class DbaUtil {
+    private static final Log log = LogFactory.getLog(DbaUtil.class);
     public static final String DEFAULT_TIME_FORMAT = "yyyy-MM-dd HH:mm";
     private static final String TOP_TEXT = "[置顶]";
 
@@ -74,7 +78,12 @@ public class DbaUtil {
     }
 
     public static Document fetchUrlDoc(String url) throws IOException {
-        return Jsoup.connect(url).userAgent("Mozilla").get();
+        try {
+            return Jsoup.connect(url).userAgent("Mozilla").get();
+        } catch (Exception e) {
+            log.debug(format("connect url(%s) failed:%s", url, e.getMessage()));
+            return null;
+        }
     }
 
     public static int fetchNumber(String source) {

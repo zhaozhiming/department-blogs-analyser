@@ -39,6 +39,8 @@ public class IteyeFetcher {
 
     private int getTotalPage(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
+        if (doc == null) return 1;
+
         int total = fetchNumber(doc.select("#blog_menu a").get(0).text());
         return (int) Math.ceil(total / ITEYE_PAGE_COUNT);
     }
@@ -46,6 +48,7 @@ public class IteyeFetcher {
     private BatchBlogs fetchBlogs(String url) throws Exception {
         BatchBlogs batchBlogs = new BatchBlogs();
         Document doc = fetchUrlDoc(url);
+        if (doc == null) return new BatchBlogs();
 
         Elements blogs = doc.select("#main div.blog_main");
         log.debug("blog size:" + blogs.size());
@@ -82,6 +85,8 @@ public class IteyeFetcher {
 
     public int fetchView(String url) throws Exception {
         Document doc = fetchUrlDoc(url);
+        if (doc == null) return -1;
+
         return fetchNumber(doc.select(
                 "#content div.blog_main div.blog_bottom li").get(1).text());
     }
