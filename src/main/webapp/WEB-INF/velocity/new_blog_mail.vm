@@ -1,4 +1,5 @@
 <h2>又有${blogs.size()}篇雄文来袭，欢迎大家点击围观，信息如下：</h2>
+<h4>更多信息请访问网站--<a href="http://depblog.sinaapp.com/" target="_blank">部门博客</a>(请用Chrome浏览器访问)</h4>
 <br/>
 <br/>
 <table border="1">
@@ -17,5 +18,3 @@
     #end
     </tbody>
 </table>
-
-<h4>更多信息请访问网站--<a href="http://depblog.sinaapp.com/" target="_blank">部门博客</a>(请用Chrome浏览器访问)</h4>
