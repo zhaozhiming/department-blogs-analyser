@@ -1,4 +1,15 @@
-<h3>最近3月统计结果</h3>
+<div id="statisticsForm" class="ui form segment">
+    <div class="two fields">
+        <div class="field">
+            <input id="statistics_date" name="statistics_date" placeholder="请选择统计日期" type="text">
+        </div>
+        <div class="field">
+            <div class="ui blue submit button">统计</div>
+        </div>
+    </div>
+</div>
+
+<h3>统计结果</h3>
 <div class="ui connected items">
     <div class="row">
         <div class="item" ng-repeat="month in months">
@@ -14,7 +25,6 @@
                             文章数量 {{top.count}}, 阅读次数 {{top.view}}
                         </div>
                     </div>
-
                 </p>
             </div>
         </div>

@@ -1,5 +1,9 @@
 ## TODO LIST
 
+#### 2014-6-1
+- [ ] move search, top, statistics to single js file
+- [ ] add statistics month function 
+
 #### 2014-5-26
 - [x] add clear useless blog view record in the create blog view url
 - [x] add cron with create blog view 

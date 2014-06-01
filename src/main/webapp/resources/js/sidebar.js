@@ -67,6 +67,12 @@ function StatisticsController($scope, $http) {
     $http.get('api/statistics').success(function (data) {
         $scope.months = data;
     });
+
+    $('#statistics_date').pickadate({
+        format: 'yyyy-mm',
+        selectYears: true,
+        selectMonths: true
+    });
 }
 
 function TopController($scope, $http) {
