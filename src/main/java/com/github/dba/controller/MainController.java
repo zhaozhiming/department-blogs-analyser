@@ -202,15 +202,18 @@ public class MainController {
         for (Blog blog : blogs) {
             Long blogId = blog.getId();
             Long blogTime = blog.getTime();
-            int preView = blog.getView();
+
             String link = blog.getLink();
             int total = DbaUtil.isCsdn(link) ?
                     csdnFetcher.fetchView(link) : iteyeFetcher.fetchView(link);
             //total equals -1 mean can't connect to the url
             if (total == -1) continue;
 
-            int increment = blogViewReadRepository.findByBlogId(blogId).isEmpty() ?
-                    total : (total - preView);
+            List<BlogView> existBlogViews = blogViewReadRepository.findByBlogId(blogId);
+            int increment = existBlogViews.isEmpty() ? total :
+                    total - existBlogViews.get(existBlogViews.size() - 1).getTotal();
+            log.debug(format("blogid: %d, total=%d, increment=%d",
+                    blogId, total, increment));
 
             blogViews.add(new BlogView(blogId, total, increment, blogTime, now));
         }
