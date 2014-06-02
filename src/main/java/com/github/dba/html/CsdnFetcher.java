@@ -83,6 +83,7 @@ public class CsdnFetcher {
                     "div.article_manage span.link_comments").get(0).text());
 
             Document detailDoc = fetchUrlDoc(link);
+            if (detailDoc == null) continue;
 
             Elements tags = detailDoc.select("#article_details div.tag2box a");
             Author author = authorService.fetchAuthor(tags);
