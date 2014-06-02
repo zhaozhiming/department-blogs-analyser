@@ -5,6 +5,7 @@ import com.github.dba.html.IteyeFetcher;
 import com.github.dba.model.*;
 import com.github.dba.repo.read.BlogReadRepository;
 import com.github.dba.repo.read.BlogViewReadRepository;
+import com.github.dba.repo.read.DepGroupReadRepository;
 import com.github.dba.repo.write.BlogViewWriteRepository;
 import com.github.dba.repo.write.BlogWriteRepository;
 import com.github.dba.repo.write.DepGroupWriteRepository;
@@ -35,6 +36,7 @@ import static java.lang.String.format;
 @Controller
 public class MainController {
     private static final Log log = LogFactory.getLog(MainController.class);
+    private static final String DATE_YEAR_MONTH = "yyyy-MM";
 
     @Autowired
     private CsdnFetcher csdnFetcher;
@@ -44,6 +46,9 @@ public class MainController {
 
     @Autowired
     private DepGroupWriteRepository depGroupWriteRepository;
+
+    @Autowired
+    private DepGroupReadRepository depGroupReadRepository;
 
     @Autowired
     private DepMemberWriteRepository depMemberWriteRepository;
@@ -77,7 +82,7 @@ public class MainController {
     @ResponseStatus(value = HttpStatus.OK)
     public void mailTop() {
         log.debug("mail top start");
-        mailService.sendTops(getMonthTops(DateTime.now().getMillis()));
+        mailService.sendTops(encapsulateResult(DateTime.now().getMillis()));
         log.debug("mail top finish");
     }
 
@@ -163,7 +168,7 @@ public class MainController {
         log.debug("top blogs start");
 
         String resultArrayJson =
-                mapper.writeValueAsString(getMonthTops(DateTime.now().getMillis()));
+                mapper.writeValueAsString(encapsulateResult(DateTime.now().getMillis()));
         log.debug(format("resultArrayJson: %s", resultArrayJson));
 
         log.debug("top blogs finish");
@@ -178,14 +183,14 @@ public class MainController {
         log.debug(format("statistics date: %s", statisticsDate));
 
         DateTime time = Strings.isNullOrEmpty(statisticsDate) ? DateTime.now()
-                : DateTime.parse(statisticsDate, DateTimeFormat.forPattern("yyyy-MM"));
+                : DateTime.parse(statisticsDate, DateTimeFormat.forPattern(DATE_YEAR_MONTH));
         //get last day of select month
         time = time.withDayOfMonth(1).plusMonths(1).minusDays(1);
 
         List<MonthStatistics> months = Lists.newArrayList();
         for (int i = 0; i < 3; i++) {
             long statisticsTime = time.minusMonths(i).getMillis();
-            List<Top> monthTops = getMonthTops(statisticsTime);
+            List<Top> monthTops = encapsulateResult(statisticsTime);
             months.add(new MonthStatistics(statisticsTime, monthTops));
         }
 
@@ -231,23 +236,20 @@ public class MainController {
         log.debug("generate blog views finish");
     }
 
-    private List<Top> getMonthTops(long time) {
-        return encapsulateResult(time, blogReadRepository.top(time));
-    }
-
-    private List<Top> encapsulateResult(Long afterTime, List<Object[]> groupResult) {
+    private List<Top> encapsulateResult(long afterTime) {
         List<Top> tops = Lists.newArrayList();
-        for (Object[] result : groupResult) {
-            log.debug(format("group result :%s", Arrays.toString(result)));
-            String groupName = result[0].toString();
-            long count = (Long) result[1];
+        List<DepGroup> groups = depGroupReadRepository.findAll();
+        groups.add(new DepGroup("N", Author.UNKNOWN));
+        for (DepGroup group : groups) {
+            log.debug(format("group result :%s", group));
+            String groupName = group.getName();
 
             List<Blog> blogs = blogReadRepository.topDetail(afterTime, groupName);
             for (Blog blog : blogs) {
                 List<BlogView> blogViews = blogViewReadRepository.findByBlogId(blog.getId());
                 blog.statisticsViewByBlogViews(blogViews);
             }
-            Top top = new Top(groupName, count, blogs);
+            Top top = new Top(groupName, blogs.size(), blogs);
             top.calcView();
             tops.add(top);
         }

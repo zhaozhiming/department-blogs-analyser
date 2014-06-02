@@ -5,6 +5,8 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Author {
+    public static final String UNKNOWN = "unknown";
+
     @Basic
     private String groupName;
     @Basic
@@ -19,7 +21,7 @@ public class Author {
     }
 
     public static Author defaultAuthor() {
-        return new Author("unknown", "unknown");
+        return new Author(UNKNOWN, UNKNOWN);
     }
 
     public String getGroupName() {

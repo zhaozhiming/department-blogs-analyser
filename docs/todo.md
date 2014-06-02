@@ -1,6 +1,9 @@
 ## TODO LIST
 
 #### 2014-6-1
+- [ ] change blog fetch every 4 hours
+- [ ] change lf group
+- [x] change top logic
 - [x] move search, top, statistics to single js file
 - [x] move custom js files to a single folder
 - [x] add statistics month function 
