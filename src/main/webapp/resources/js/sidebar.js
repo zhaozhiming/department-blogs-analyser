@@ -64,11 +64,11 @@ function SearchController($scope, $http, $route) {
 }
 
 function StatisticsController($scope, $http) {
-    $('#statistics_date').pickadate({
-        format: 'yyyy-mm',
-        selectYears: true,
-        selectMonths: true
-    });
+    var options = {
+        selectedYear: (new Date).getFullYear()
+    };
+
+    $('#statistics_date').monthpicker(options);
 
     $scope.statistics = function () {
         var queryData = {
