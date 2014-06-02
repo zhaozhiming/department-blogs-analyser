@@ -1,7 +1,7 @@
 ## TODO LIST
 
 #### 2014-6-1
-- [ ] change lf group
+- [x] change HF group
 - [x] change blog fetch every 4 hours
 - [x] change top logic
 - [x] move search, top, statistics to single js file
