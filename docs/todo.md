@@ -1,6 +1,7 @@
 ## TODO LIST
 
 #### 2014-6-1
+- [x] add fork me on github ribbons
 - [x] change HF group
 - [x] change blog fetch every 4 hours
 - [x] change top logic
