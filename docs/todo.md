@@ -1,7 +1,7 @@
 ## TODO LIST
 
 #### 2014-6-1
-- [ ] move search, top, statistics to single js file
+- [x] move search, top, statistics to single js file
 - [x] move custom js files to a single folder
 - [x] add statistics month function 
 

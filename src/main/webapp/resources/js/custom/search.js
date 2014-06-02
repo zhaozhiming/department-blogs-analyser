@@ -1,12 +1,3 @@
-var transform = function(data){
-    return $.param(data);
-};
-
-var config = {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-    transformRequest: transform
-};
-
 function SearchController($scope, $http, $route) {
     var rules = {
     };
