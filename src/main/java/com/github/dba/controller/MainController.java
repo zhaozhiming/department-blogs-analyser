@@ -11,11 +11,13 @@ import com.github.dba.repo.write.DepGroupWriteRepository;
 import com.github.dba.repo.write.DepMemberWriteRepository;
 import com.github.dba.service.MailService;
 import com.github.dba.util.DbaUtil;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -168,15 +170,21 @@ public class MainController {
         return resultArrayJson;
     }
 
-    @RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "/statistics", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
     public
     @ResponseBody
-    String statistics() throws Exception {
+    String statistics(@RequestParam("statisticsDate") String statisticsDate) throws Exception {
         log.debug("statistics blogs start");
+        log.debug(format("statistics date: %s", statisticsDate));
+
+        DateTime time = Strings.isNullOrEmpty(statisticsDate) ? DateTime.now()
+                : DateTime.parse(statisticsDate, DateTimeFormat.forPattern("yyyy-MM"));
+        //get last day of select month
+        time = time.withDayOfMonth(1).plusMonths(1).minusDays(1);
 
         List<MonthStatistics> months = Lists.newArrayList();
         for (int i = 0; i < 3; i++) {
-            long statisticsTime = DateTime.now().minusMonths(i).getMillis();
+            long statisticsTime = time.minusMonths(i).getMillis();
             List<Top> monthTops = getMonthTops(statisticsTime);
             months.add(new MonthStatistics(statisticsTime, monthTops));
         }

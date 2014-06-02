@@ -6,16 +6,16 @@ dba_app.config(['$routeProvider', function ($routeProvider) {
         .otherwise({redirectTo: '/home'});
 }]);
 
+var transform = function(data){
+    return $.param(data);
+};
+
+var config = {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    transformRequest: transform
+};
+
 function SearchController($scope, $http, $route) {
-    var transform = function(data){
-        return $.param(data);
-    };
-
-    var postConfig = {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-        transformRequest: transform
-    };
-
     var rules = {
     };
 
@@ -29,7 +29,7 @@ function SearchController($scope, $http, $route) {
             };
 
             $scope.search = function () {
-                $http.post('api/search', queryData, postConfig).success(function (data) {
+                $http.post('api/search', queryData, config).success(function (data) {
                     $scope.blogs = data;
                 });
             };
@@ -64,15 +64,21 @@ function SearchController($scope, $http, $route) {
 }
 
 function StatisticsController($scope, $http) {
-    $http.get('api/statistics').success(function (data) {
-        $scope.months = data;
-    });
-
     $('#statistics_date').pickadate({
         format: 'yyyy-mm',
         selectYears: true,
         selectMonths: true
     });
+
+    $scope.statistics = function () {
+        var queryData = {
+            "statisticsDate": $("#statistics_date").val() || ""
+        };
+
+        $http.post('api/statistics', queryData, config).success(function (data) {
+            $scope.months = data;
+        });
+    };
 }
 
 function TopController($scope, $http) {

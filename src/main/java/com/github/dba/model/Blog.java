@@ -21,7 +21,7 @@ public class Blog {
     private static final long ONE_MONTH = 1000 * 60 * 60 * 24 * 30L;
     private static final long TWO_MONTH = ONE_MONTH * 2;
     private static final long THREE_MONTH = ONE_MONTH * 3;
-    private static final String PAGE_DATE_FORMAT = "yyyy-MM-dd";
+    private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -156,7 +156,7 @@ public class Blog {
 
                 if (!Strings.isNullOrEmpty(startDate)) {
                     try {
-                        long time = DbaUtil.parseTimeStringToLong(startDate, PAGE_DATE_FORMAT);
+                        long time = DbaUtil.parseTimeStringToLong(startDate, DEFAULT_DATE_FORMAT);
                         predicate.getExpressions().add(cb.ge(root.<Long>get("time"), time));
                     } catch (ParseException e) {
                         throw new RuntimeException(format("%s parse to date error:", startDate));
@@ -165,7 +165,7 @@ public class Blog {
 
                 if (!Strings.isNullOrEmpty(endDate)) {
                     try {
-                        long time = DbaUtil.parseTimeStringToLong(endDate, PAGE_DATE_FORMAT);
+                        long time = DbaUtil.parseTimeStringToLong(endDate, DEFAULT_DATE_FORMAT);
                         predicate.getExpressions().add(cb.le(root.<Long>get("time"), time));
                     } catch (ParseException e) {
                         throw new RuntimeException(format("%s parse to date error:", endDate));
