@@ -239,7 +239,6 @@ public class MainController {
     private List<Top> encapsulateResult(long afterTime) {
         List<Top> tops = Lists.newArrayList();
         List<DepGroup> groups = depGroupReadRepository.findAll();
-        groups.add(new DepGroup("N", Author.UNKNOWN));
         for (DepGroup group : groups) {
             log.debug(format("group result :%s", group));
             String groupName = group.getName();
