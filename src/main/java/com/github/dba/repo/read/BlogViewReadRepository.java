@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface BlogViewReadRepository extends JpaRepository<BlogView, Long> {
 
-    @Query(value = "SELECT bv FROM blog_views bv WHERE bv.blogID = :blogId order by bv.recordTime desc")
+    @Query(value = "SELECT bv FROM blog_views bv WHERE bv.blogID = :blogId order by bv.recordTime")
     List<BlogView> findByBlogId(@Param("blogId") Long blogId);
 }
