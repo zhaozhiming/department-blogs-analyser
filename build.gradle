@@ -1,6 +1,7 @@
 apply plugin: "war"
 apply plugin: "idea"
 apply plugin: "jetty"
+apply plugin: "eclipse"
 
 compileJava {
     sourceCompatibility = 1.6
