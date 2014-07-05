@@ -1,9 +1,13 @@
 package com.github.dba.service;
 
-import com.github.dba.model.Blog;
-import com.github.dba.model.Top;
-import com.google.common.collect.Maps;
-import com.sina.sae.mail.SaeMail;
+import static java.lang.String.format;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,11 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.servlet.view.velocity.VelocityConfigurer;
 
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
-
-import static java.lang.String.format;
+import com.github.dba.model.Blog;
+import com.github.dba.model.MailInfo;
+import com.github.dba.model.Top;
+import com.google.common.collect.Maps;
+import com.sina.sae.mail.SaeMail;
 
 @Service
 public class MailService {
@@ -65,9 +69,21 @@ public class MailService {
 
         log.debug("send tops mail finish");
     }
+    
+    public void sendMailDirectly(MailInfo mailInfo){
+        SaeMail mail = createSaeMailInstance();
+        mail.setTo(StringUtils.split(mailInfo.getTo(), ","));
+        mail.setSubject(mailInfo.getSubject());
+        mail.setContent(mailInfo.getContent());
+        log.debug(format("mail to:%s|subject:%s|content:%s", mailInfo.getContent()));
+        if (!mail.send()) {
+            log.debug("send mail fail");
+        }
+    }
 
     private void sendMail(String subject, SaeMail mail, Map<String, Object> model, String temple) {
         mail.setSubject(subject);
+        mail.setTo(toMail.split(","));
 
         String content = VelocityEngineUtils.mergeTemplateIntoString(
                 velocityConfigurer.getVelocityEngine(), temple,
@@ -88,7 +104,6 @@ public class MailService {
         mail.setSmtpHost(smtpHost);
         mail.setSmtpPort(smtpPort);
 
-        mail.setTo(toMail.split(","));
         mail.setContentType("HTML");
         mail.setChartset("UTF-8");
         return mail;
