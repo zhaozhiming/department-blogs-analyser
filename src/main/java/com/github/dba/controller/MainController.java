@@ -235,6 +235,16 @@ public class MainController {
 
         log.debug("generate blog views finish");
     }
+    
+	@RequestMapping(value = "/mail/forward", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.OK)
+	public void forward(@RequestParam("to") String to, @RequestParam("subject") String subject,
+			@RequestParam("content") String content) throws Exception {
+		log.debug("Forward mail start");
+		MailInfo mailInfo = new MailInfo(to, subject, content);
+		mailService.sendMailDirectly(mailInfo);
+		log.debug("forward mail finish");
+	}
 
     private List<Top> encapsulateResult(long afterTime) {
         List<Top> tops = Lists.newArrayList();
