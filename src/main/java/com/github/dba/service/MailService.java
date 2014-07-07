@@ -75,7 +75,8 @@ public class MailService {
         mail.setTo(StringUtils.split(mailInfo.getTo(), ","));
         mail.setSubject(mailInfo.getSubject());
         mail.setContent(mailInfo.getContent());
-        log.debug(format("mail to:%s|subject:%s|content:%s", mailInfo.getContent()));
+        log.debug(format("mail to:%s|subject:%s|content:%s",
+                mailInfo.getTo(), mailInfo.getSubject(),mailInfo.getContent()));
         if (!mail.send()) {
             log.debug("send mail fail");
         }
